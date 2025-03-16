@@ -2,10 +2,21 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 16px;
+    text-align: center;
 }
 
 .habits-container h2 {
-    text-align: center;
     color: var(--color-texto);
+    margin-bottom: 8px;
+}
+
+.habits-container p {
+    font-style: italic;
+    color: rgb(42, 42, 42);
+    margin-top: -10px;
     margin-bottom: 24px;
+}
+p{
+    font-style: italic;
+    color: rgb(42, 42, 42);
 }
