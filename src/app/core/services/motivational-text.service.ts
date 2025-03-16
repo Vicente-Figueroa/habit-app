@@ -7,36 +7,27 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class MotivationalTextService {
-  // Obtenemos el token de GitHub desde una variable de entorno
-  // Nota: en Angular, lo ideal es configurar el token de forma segura (por ejemplo, usando environment.ts)
   private token: string = environment.githubToken;
-  
   private endpoint: string = 'https://models.inference.ai.azure.com';
   private modelName: string = 'DeepSeek-V3';
-  
-  constructor() { }
+  private storageKey = 'motivationalText';
+  private expirationTime = 4 * 60 * 60 * 1000; // 4 horas en milisegundos
 
-  /**
-   * Llama a la API de DeepSeek para obtener un mensaje motivacional.
-   * @param prompt Texto que se envía como prompt para generar el mensaje.
-   * @returns Una promesa que resuelve en el mensaje generado.
-   */
+  constructor() {}
+
   async getMotivationalTextFromModel(prompt: string): Promise<string> {
-    console.log( this.token)
-    // Creamos el cliente usando el token y el endpoint
-    const client = ModelClient(
-      this.endpoint,
-      new AzureKeyCredential(this.token)
-    );
+    const cachedText = this.getCachedMotivationalText();
+    
+    if (cachedText) {
+      return cachedText;
+    }
 
-    // Configuramos el cuerpo de la petición
+    const client = ModelClient(this.endpoint, new AzureKeyCredential(this.token));
     const body = {
-      messages: [
-        { role: "user", content: prompt }
-      ],
+      messages: [{ role: "user", content: prompt }],
       max_tokens: 1000,
       model: this.modelName,
-      temperature : 1
+      temperature: 1
     };
 
     try {
@@ -46,11 +37,36 @@ export class MotivationalTextService {
         throw new Error();
       }
 
-      // Extraemos y retornamos el mensaje de la respuesta
-      return response.body.choices[0].message.content || '' ;
+      const newMessage = response.body.choices[0].message.content || '';
+      this.storeMotivationalText(newMessage);
+      return newMessage;
     } catch (error) {
       console.error("Error al obtener el mensaje motivacional:", error);
       throw error;
     }
+  }
+
+  private getCachedMotivationalText(): string | null {
+    const storedData = localStorage.getItem(this.storageKey);
+    
+    if (storedData) {
+      const { message, timestamp } = JSON.parse(storedData);
+      const now = Date.now();
+
+      if (now - timestamp < this.expirationTime) {
+        return message;
+      }
+    }
+
+    return null;
+  }
+
+  private storeMotivationalText(message: string): void {
+    const data = {
+      message,
+      timestamp: Date.now()
+    };
+
+    localStorage.setItem(this.storageKey, JSON.stringify(data));
   }
 }
