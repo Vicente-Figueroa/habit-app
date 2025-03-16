@@ -1,15 +1,17 @@
 const fs = require('fs');
 
 function setEnv() {
-    // Obtén las variables de entorno de Vercel
-    const githubToken = process.env.NG_APP_GITHUB_TOKEN || 'nada';
+    // Obtén la clave de API desde las variables de entorno (por ejemplo, en Vercel o en otro servicio de hosting)
+    const googleAiApiKey = process.env.NG_APP_GOOGLE_AI_API_KEY || 'nada';
 
     // Define el contenido del archivo de entorno
     const envConfigFile = `
     export const environment = {
-      githubToken: "${githubToken}"
+      googleAiApiKey: "${googleAiApiKey}"
     };`;
-    console.log(githubToken)
+
+    console.log(`Google AI API Key: ${googleAiApiKey}`);
+
     // Ruta del archivo de entorno
     const targetPath = './src/environments/environment.ts';
 
@@ -23,4 +25,5 @@ function setEnv() {
     });
 }
 
+// Ejecuta la función para crear el archivo de entorno
 setEnv();

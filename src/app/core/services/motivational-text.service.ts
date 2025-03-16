@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
-import ModelClient, { isUnexpected } from '@azure-rest/ai-inference';
-import { AzureKeyCredential } from '@azure/core-auth';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MotivationalTextService {
-  private token: string = environment.githubToken;
-  private endpoint: string = 'https://models.inference.ai.azure.com';
-  private modelName: string = 'DeepSeek-V3';
+  private apiKey: string = environment.googleAiApiKey;
+  private modelName: string = 'gemini-1.5-flash'; // Puedes cambiar el modelo según sea necesario
   private storageKey = 'motivationalText';
   private expirationTime = 4 * 60 * 60 * 1000; // 4 horas en milisegundos
+  private client: GoogleGenerativeAI;
 
-  constructor() {}
+  constructor() {
+    this.client = new GoogleGenerativeAI(this.apiKey);
+  }
 
   async getMotivationalTextFromModel(prompt: string): Promise<string> {
     const cachedText = this.getCachedMotivationalText();
@@ -22,22 +23,12 @@ export class MotivationalTextService {
       return cachedText;
     }
 
-    const client = ModelClient(this.endpoint, new AzureKeyCredential(this.token));
-    const body = {
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 1000,
-      model: this.modelName,
-      temperature: 1
-    };
+    const model = this.client.getGenerativeModel({ model: this.modelName });
 
     try {
-      const response = await client.path("/chat/completions").post({ body });
+      const response = await model.generateContent(prompt);
+      const newMessage = response.response.text() || '';
 
-      if (isUnexpected(response)) {
-        throw new Error();
-      }
-
-      const newMessage = response.body.choices[0].message.content || '';
       this.storeMotivationalText(newMessage);
       return newMessage;
     } catch (error) {
