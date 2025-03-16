@@ -22,7 +22,7 @@ export class MotivationalTextService {
    * @returns Una promesa que resuelve en el mensaje generado.
    */
   async getMotivationalTextFromModel(prompt: string): Promise<string> {
-    console.log("apikey" : this.token)
+    console.log( this.token)
     // Creamos el cliente usando el token y el endpoint
     const client = ModelClient(
       this.endpoint,
