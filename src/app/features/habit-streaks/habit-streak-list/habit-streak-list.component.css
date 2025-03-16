@@ -1,72 +1,66 @@
-.habit-streak-list {
+/* Contenedor del listado en formato grid */
+.habit-streak-list ul {
   list-style: none;
   padding: 0;
-  margin: 0;
+  display: grid;
+  grid-gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 }
 
-.habit-streak-list .stat-item {
+/* Tarjeta (card) para cada racha */
+.habit-streak-list .card {
   background-color: #fff;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
+  padding: 16px;
   box-shadow: var(--sombra-suave);
-  color: var(--color-texto);
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
-  transition: transform 0.2s;
+  gap: 8px;
+  position: relative;
 }
 
-.habit-streak-list .stat-item:hover {
-  transform: translateY(-2px);
-}
-
-/* Cabecera de la tarjeta */
-.habit-streak-list .card-header {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.habit-streak-list .card-header h3 {
+/* Encabezado de la tarjeta */
+.habit-streak-list .card-header h4 {
   margin: 0;
   font-size: 1.2rem;
+  color: var(--color-texto);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Nueva línea para mostrar frecuencia y tipo */
+.habit-streak-list .card-header .habit-info {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--color-texto);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Información de la tarjeta */
+.habit-streak-list .card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.habit-streak-list .card-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.habit-streak-list .card-info i {
   color: var(--color-primario);
 }
 
-/* Contenido de la tarjeta */
-.habit-streak-list .card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-/* Campos de información */
-.habit-streak-list .stat-field {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.habit-streak-list .stat-field i {
-  margin-right: 0.5rem;
-  font-size: 1.1rem;
-  color: var(--color-secundario);
-}
-
-.habit-streak-list .stat-field .label {
-  font-weight: bold;
-  color: var(--color-acento);
-  margin-right: 0.3rem;
-}
-
-.habit-streak-list .stat-field .value {
-  font-size: 1rem;
-  margin-right: 0.5rem;
-}
-
-/* Badge de validación */
-.habit-streak-list .stat-field .badge {
+/* Badge de validación para cumplimiento */
+.habit-streak-list .badge {
   padding: 0.2rem 0.5rem;
   border-radius: 12px;
   font-size: 0.9rem;
@@ -75,44 +69,40 @@
   margin-left: auto;
 }
 
-.habit-streak-list .stat-field .badge.badge-low {
-  background-color: #e74c3c;
-  /* rojo */
+/* Para hábitos positivos: mayor cumplimiento = bueno */
+.habit-streak-list .badge.badge-high {
+  background-color: #2ecc71; /* verde */
+}
+.habit-streak-list .badge.badge-medium {
+  background-color: #f1c40f; /* amarillo */
+}
+.habit-streak-list .badge.badge-low {
+  background-color: #e74c3c; /* rojo */
 }
 
-.habit-streak-list .stat-field .badge.badge-medium {
-  background-color: #f1c40f;
-  /* amarillo */
-}
-
-.habit-streak-list .stat-field .badge.badge-high {
-  background-color: #2ecc71;
-  /* verde */
-}
-
-/* Media Queries para dispositivos móviles */
+/* Adaptación para dispositivos móviles */
 @media (max-width: 600px) {
-  .habit-streak-list .stat-item {
-    padding: 0.8rem;
-    gap: 0.5rem;
+  .habit-streak-list ul {
+    grid-template-columns: 1fr;
   }
-
-  .habit-streak-list .card-header h3 {
+  
+  .habit-streak-list .card {
+    padding: 12px;
+  }
+  
+  .habit-streak-list .card-header h4 {
     font-size: 1rem;
   }
-
-  .habit-streak-list .stat-field {
-    flex-direction: column;
-    align-items: flex-start;
+  
+  .habit-streak-list .card-header .habit-info {
+    font-size: 0.85rem;
   }
-
-  .habit-streak-list .stat-field .badge {
-    margin-left: 0;
-    margin-top: 0.3rem;
-    align-self: flex-end;
+  
+  .habit-streak-list .card-info p {
+    font-size: 0.85rem;
   }
-
-  .habit-streak-list .stat-field .value {
-    font-size: 0.95rem;
+  
+  .habit-streak-list .badge {
+    font-size: 0.8rem;
   }
 }
