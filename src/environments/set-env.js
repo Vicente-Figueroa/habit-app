@@ -8,9 +8,8 @@ function setEnv() {
     const envConfigFile = `
     export const environment = {
       githubToken: "${githubToken}"
-      console.log(githubToken);
     };`;
-
+    console.log(githubToken)
     // Ruta del archivo de entorno
     const targetPath = './src/environments/environment.ts';
 
