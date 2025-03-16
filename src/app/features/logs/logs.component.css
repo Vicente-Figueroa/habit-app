@@ -21,3 +21,12 @@ p {
     font-style: italic;
     color: rgb(42, 42, 42);
 }
+
+@media (max-width : 600px) {
+    .logs-container {
+        max-width: 80vw;
+        margin: auto;
+        text-align: center;
+        padding: 16px;
+    }
+}

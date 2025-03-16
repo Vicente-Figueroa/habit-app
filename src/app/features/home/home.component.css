@@ -84,3 +84,61 @@
 .modal button:hover {
   background-color: var(--color-secundario);
 }
+
+
+.instructions-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  background: #fff;
+  box-shadow: var(--sombra-suave);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.instructions-header {
+  background: var(--degradado-header);
+  padding: 1.5rem;
+  text-align: center;
+  color: #fff;
+}
+
+.instructions-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.instructions-body {
+  padding: 2rem;
+}
+
+.instructions-body p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
+
+.instructions-body ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.instructions-body li {
+  margin-bottom: 1rem;
+}
+
+.instructions-body li strong {
+  color: var(--color-secundario);
+  font-size: 1.2rem;
+}
+
+.instructions-body li em {
+  color: var(--color-acento);
+}
+
+.final-msg {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: var(--color-primario);
+  margin-top: 2rem;
+}
