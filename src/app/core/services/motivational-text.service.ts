@@ -35,7 +35,8 @@ export class MotivationalTextService {
         { role: "user", content: prompt }
       ],
       max_tokens: 1000,
-      model: this.modelName
+      model: this.modelName,
+      temperature : 1
     };
 
     try {

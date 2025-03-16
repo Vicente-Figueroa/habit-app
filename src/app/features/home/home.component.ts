@@ -30,7 +30,7 @@ export class HomeComponent {
   ngOnInit(): void {
     // Llamamos una vez para obtener el mensaje motivacional al iniciar
     this.motivationalTextService.getMotivationalTextFromModel(
-      "Genera un mensaje motivacional muy corto para inspirar a cumplir objetivos."
+      "Genera un mensaje motivacional muy corto para inspirar a cumplir objetivos. se creativo y no se repita."
     ).then(text => {
       this.motivationalText = text;
     }).catch(error => {
