@@ -7,11 +7,13 @@
 
     <div class="home-header">
         <h1>Bienvenido a la App de Hábitos</h1>
-        <p>Gestiona y sigue tus hábitos diarios sin esfuerzo.</p>
+        <p>{{ motivationalText }} - DeepSeek</p>
     </div>
 
+
     <!-- Componente que muestra los hábitos diarios -->
-    <app-daily-habits [habits]="todaysHabits" [logs]="logSignal.logs()" (quickLog)="onQuickLog($event)"></app-daily-habits>
+    <app-daily-habits [habits]="todaysHabits" [logs]="logSignal.logs()"
+        (quickLog)="onQuickLog($event)"></app-daily-habits>
 
     <!-- Modal de confirmación -->
     <div class="modal-overlay" *ngIf="showConfirmation">

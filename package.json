@@ -2,9 +2,10 @@
   "name": "myapp",
   "version": "0.0.0",
   "scripts": {
+    "config": "node src/environments/set-env.js",
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "npm run config && ng serve",
+    "build": "npm run config && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -19,6 +20,8 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@azure-rest/ai-inference": "^1.0.0-beta.5",
+    "@azure/core-auth": "^1.9.0",
     "idb": "^8.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

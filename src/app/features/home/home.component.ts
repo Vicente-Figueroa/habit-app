@@ -5,6 +5,8 @@ import { Habit } from '../../core/models/habit.model';
 import { DailyHabitsComponent } from './daily-habits/daily-habits.component';
 import { CommonModule } from '@angular/common';
 import { CategorySignal } from '../../core/signals/category.signal';
+import { Subscription } from 'rxjs';
+import { MotivationalTextService } from '../../core/services/motivational-text.service';
 
 @Component({
   selector: 'app-home',
@@ -14,21 +16,41 @@ import { CategorySignal } from '../../core/signals/category.signal';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+  currentDate: Date = new Date();
+  motivationalText: string = '';
+  private motivationalTextSubscription!: Subscription;
+
   constructor(
     public habitSignal: HabitSignal,
     public categorySignal: CategorySignal,
-    public logSignal: LogSignal
+    public logSignal: LogSignal,
+    private motivationalTextService: MotivationalTextService
   ) { }
-  currentDate: Date = new Date();
 
-  // Retorna el día actual en minúsculas (ej: "lunes")
+  ngOnInit(): void {
+    // Llamamos una vez para obtener el mensaje motivacional al iniciar
+    this.motivationalTextService.getMotivationalTextFromModel(
+      "Genera un mensaje motivacional muy corto para inspirar a cumplir objetivos."
+    ).then(text => {
+      this.motivationalText = text;
+    }).catch(error => {
+      console.error("Error al obtener el mensaje motivacional:", error);
+    });
+
+    // Si en algún futuro decidimos que el texto se actualice automáticamente,
+    // podríamos crear un observable o timer que invoque nuevamente el método.
+  }
+
+  ngOnDestroy(): void {
+    if (this.motivationalTextSubscription) {
+      this.motivationalTextSubscription.unsubscribe();
+    }
+  }
+
   get todayDay(): string {
     return this.currentDate.toLocaleDateString('es-CL', { weekday: 'long' }).toLowerCase();
   }
 
-  // Filtra los hábitos que aplican para hoy:
-  // Si el hábito tiene días definidos, se muestra si el día actual está incluido;
-  // si no, se asume que se aplica diariamente.
   get todaysHabits(): Habit[] {
     return this.habitSignal.habits().filter(habit => {
       if (habit.diasSemana && habit.diasSemana.length > 0) {
@@ -39,14 +61,11 @@ export class HomeComponent {
     });
   }
 
-  // Estado para mostrar el modal de confirmación
   showConfirmation: boolean = false;
   confirmationMessage: string = '';
 
-  // Registra un log rápido para el hábito y luego muestra el modal con el total acumulado hoy
   async onQuickLog(habit: Habit): Promise<void> {
     if (!habit.id) return;
-    // Crear el log rápido con cantidad 1
     const log = {
       id: Date.now(),
       habitId: habit.id,
@@ -57,13 +76,11 @@ export class HomeComponent {
     };
     await this.logSignal.addLog(log);
 
-    // Calcular el total acumulado para el hábito hoy
     const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     const total = this.logSignal.logs()
       .filter(l => l.habitId === habit.id && l.fecha.startsWith(todayStr))
       .reduce((sum, l) => sum + (l.cantidadRealizada || 0), 0);
 
-    // Configurar y mostrar el modal de confirmación
     this.confirmationMessage = `Se agregó +1 a "${habit.nombre}". Total hoy: ${total}.`;
     this.showConfirmation = true;
   }
