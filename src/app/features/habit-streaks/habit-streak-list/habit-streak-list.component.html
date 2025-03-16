@@ -1,0 +1,31 @@
+<ul class="habit-streak-list">
+  <li *ngFor="let stat of statistics" class="stat-item">
+    <div class="card-header">
+      <h3>Hábito ID: {{ stat.habitId }}</h3>
+    </div>
+    <div class="card-content">
+      <div class="stat-field">
+        <i class="fa fa-bolt"></i>
+        <span class="label">Racha Actual:</span>
+        <span class="value">{{ stat.rachaActual }}</span>
+      </div>
+      <div class="stat-field">
+        <i class="fa fa-trophy"></i>
+        <span class="label">Racha Máxima:</span>
+        <span class="value">{{ stat.rachaMaxima }}</span>
+      </div>
+      <div class="stat-field">
+        <i class="fa fa-check-circle"></i>
+        <span class="label">Cumplimiento:</span>
+        <span class="value">{{ stat.porcentajeCumplimiento | number:'1.0-2' }}%</span>
+        <span class="badge" [ngClass]="{
+          'badge-low': stat.porcentajeCumplimiento < 50,
+          'badge-medium': stat.porcentajeCumplimiento >= 50 && stat.porcentajeCumplimiento < 80,
+          'badge-high': stat.porcentajeCumplimiento >= 80
+        }">
+          {{ stat.porcentajeCumplimiento < 50 ? 'Bajo' : (stat.porcentajeCumplimiento < 80 ? 'Medio' : 'Alto' ) }}
+            </span>
+      </div>
+    </div>
+  </li>
+</ul>
