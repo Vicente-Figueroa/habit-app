@@ -8,6 +8,7 @@ function setEnv() {
     const envConfigFile = `
     export const environment = {
       githubToken: "${githubToken}"
+      console.log(githubToken);
     };`;
 
     // Ruta del archivo de entorno
