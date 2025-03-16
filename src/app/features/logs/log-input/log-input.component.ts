@@ -3,6 +3,7 @@ import { Habit } from '../../../core/models/habit.model';
 import { Log } from '../../../core/models/log.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { currentTime } from '../../../core/signals/time.signal';
 
 @Component({
   selector: 'app-log-input',
@@ -14,9 +15,8 @@ export class LogInputComponent {
   @Output() addLog = new EventEmitter<Log>();
   @Input() habits: Habit[] = [];
 
-  // Signals para capturar datos del nuevo registro
   selectedHabit = signal<number | null>(null);
-  logDate = signal<string>(new Date().toISOString().split('T')[0]);
+  logDate = signal<string>(currentTime().toISOString().split('T')[0]); // Usa la signal de tiempo
   logState = signal<'completado' | 'parcial' | 'no completado'>('completado');
   logAmount = signal<number | null>(null);
   logComment = signal<string>('');
@@ -24,14 +24,15 @@ export class LogInputComponent {
   onSubmit(event: Event) {
     event.preventDefault();
     const habitId = this.selectedHabit();
-    if (!habitId) return; // Asegurar que se seleccione un hábito
+    if (!habitId) return;
 
-    // Formatear la fecha sin cambios de zona horaria
-    const fecha = new Date(this.logDate() + 'T00:00:00').toISOString();
+    // Convertir la fecha seleccionada al formato correcto en la zona horaria de Chile
+    const fecha = new Date(`${this.logDate()}T00:00:00-03:00`).toISOString();
+
     const log: Log = {
       id: Date.now(),
       habitId,
-      fecha,
+      fecha, // Fecha correctamente ajustada
       estado: this.logState(),
       cantidadRealizada: this.logAmount() ?? undefined,
       comentario: this.logComment().trim() || undefined
@@ -43,7 +44,7 @@ export class LogInputComponent {
 
   resetForm() {
     this.selectedHabit.set(null);
-    this.logDate.set(new Date().toISOString().split('T')[0]);
+    this.logDate.set(currentTime().toISOString().split('T')[0]); // Usa la signal
     this.logState.set('completado');
     this.logAmount.set(null);
     this.logComment.set('');

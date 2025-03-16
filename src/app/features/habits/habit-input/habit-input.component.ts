@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Category } from '../../../core/models/category.model';
+import { currentTime } from '../../../core/signals/time.signal';
 
 @Component({
   selector: 'app-habit-input',
-  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './habit-input.component.html',
   styleUrls: ['./habit-input.component.css']
@@ -14,9 +14,7 @@ export class HabitInputComponent {
   @Output() addHabit = new EventEmitter<any>();
   @Input() categories: Category[] = [];
 
-  // Propiedad para controlar si el formulario está abierto o cerrado
   isOpen: boolean = false;
-
   habitName: string = '';
   habitDescription: string = '';
   habitType: 'bueno' | 'malo' = 'bueno';
@@ -27,7 +25,6 @@ export class HabitInputComponent {
   habitInicio: string = '';
   habitFin: string = '';
 
-  // Lista de días de la semana con checkboxes
   daysOfWeek = [
     { name: 'Lunes', value: 'lunes', selected: false },
     { name: 'Martes', value: 'martes', selected: false },
@@ -38,6 +35,8 @@ export class HabitInputComponent {
     { name: 'Domingo', value: 'domingo', selected: false }
   ];
 
+  constructor() {}
+
   toggleForm() {
     this.isOpen = !this.isOpen;
   }
@@ -45,10 +44,11 @@ export class HabitInputComponent {
   onSubmit(event: Event) {
     event.preventDefault();
 
-    // Obtener los días seleccionados
     const diasSeleccionados = this.daysOfWeek
       .filter(day => day.selected)
       .map(day => day.value);
+
+    const now = currentTime(); // Usamos la signal para la fecha normalizada
 
     const newHabit = {
       id: Date.now(),
@@ -62,14 +62,13 @@ export class HabitInputComponent {
       diasSemana: diasSeleccionados.length ? diasSeleccionados : undefined,
       horarioInicio: this.habitInicio || undefined,
       horarioFin: this.habitFin || undefined,
-      fechaCreacion: new Date().toISOString(),
-      fechaActualizacion: new Date().toISOString(),
+      fechaCreacion: now.toISOString(),
+      fechaActualizacion: now.toISOString(),
       activo: true
     };
 
     this.addHabit.emit(newHabit);
     this.resetForm();
-    // Opcionalmente, puedes cerrar el formulario después de enviar
     this.isOpen = false;
   }
 
@@ -83,7 +82,6 @@ export class HabitInputComponent {
     this.selectedCategory = null;
     this.habitInicio = '';
     this.habitFin = '';
-    // Reiniciar selección de días
     this.daysOfWeek.forEach(day => day.selected = false);
   }
 }

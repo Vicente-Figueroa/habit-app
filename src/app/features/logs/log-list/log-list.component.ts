@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { LogSignal } from '../../../core/signals/log.signal';
 import { HabitSignal } from '../../../core/signals/habit.signal';
 import { Log } from '../../../core/models/log.model';
+import { currentTime } from '../../../core/signals/time.signal';
 
 @Component({
   selector: 'app-log-list',
@@ -12,10 +13,11 @@ import { Log } from '../../../core/models/log.model';
   styleUrl: './log-list.component.css'
 })
 export class LogListComponent {
-  constructor(public logSignal: LogSignal,
-     public habitSignal: HabitSignal) {}
+  constructor(
+    public logSignal: LogSignal,
+    public habitSignal: HabitSignal
+  ) {}
 
-  // Variables para el modal de edición
   editingLog: Log | null = null;
   editHabitId: number | null = null;
   editDate: string = '';
@@ -23,15 +25,13 @@ export class LogListComponent {
   editAmount: number | null = null;
   editComment: string = '';
 
-  // Variables para el modal de borrado
   showDeleteConfirm: boolean = false;
   logToDelete: Log | null = null;
 
   openEditModal(log: Log) {
     this.editingLog = { ...log };
     this.editHabitId = log.habitId;
-    // Extraer solo la parte de la fecha (YYYY-MM-DD)
-    this.editDate = log.fecha.split('T')[0];
+    this.editDate = log.fecha.split('T')[0]; // Extrae la fecha sin la hora
     this.editState = log.estado;
     this.editAmount = log.cantidadRealizada ?? null;
     this.editComment = log.comentario || '';
@@ -43,14 +43,17 @@ export class LogListComponent {
 
   async saveEdit() {
     if (!this.editingLog || !this.editHabitId) return;
+
+    // Convertir la fecha a un formato correcto en la zona horaria de Chile
     const updatedLog: Log = {
       ...this.editingLog,
       habitId: this.editHabitId,
-      fecha: new Date(this.editDate + 'T00:00:00').toISOString(),
+      fecha: new Date(`${this.editDate}T00:00:00-03:00`).toISOString(), // 🔥 Usa la zona horaria de Chile
       estado: this.editState,
       cantidadRealizada: this.editAmount ?? undefined,
       comentario: this.editComment.trim() || undefined
     };
+
     await this.logSignal.updateLog(updatedLog);
     this.closeEditModal();
   }
@@ -71,7 +74,6 @@ export class LogListComponent {
     this.logToDelete = null;
   }
 
-  // Método auxiliar para obtener el nombre del hábito
   getHabitName(habitId: number): string {
     const habit = this.habitSignal.habits().find(h => h.id === Number(habitId));
     return habit ? habit.nombre : 'Hábito desconocido';

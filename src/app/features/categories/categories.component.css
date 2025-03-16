@@ -9,11 +9,17 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
-h3 {
+h3, p {
     margin-bottom: 16px;
     color: var(--color-texto);
     grid-column: 1 / -1;
     /* Asegura que el título ocupe todo el ancho */
+}
+
+p{
+    font-style: italic;
+    margin-top: -20px;
+    color: rgb(42, 42, 42);
 }
 
 @media (max-width : 600px) {

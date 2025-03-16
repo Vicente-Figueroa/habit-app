@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { HabitSignal } from '../../core/signals/habit.signal';
 import { LogSignal } from '../../core/signals/log.signal';
 import { Habit } from '../../core/models/habit.model';
@@ -7,18 +7,18 @@ import { CommonModule } from '@angular/common';
 import { CategorySignal } from '../../core/signals/category.signal';
 import { Subscription } from 'rxjs';
 import { MotivationalTextService } from '../../core/services/motivational-text.service';
+import { currentTime } from '../../core/signals/time.signal';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [DailyHabitsComponent, CommonModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
-  currentDate: Date = new Date();
   motivationalText: string = '';
   private motivationalTextSubscription!: Subscription;
+  today = computed(() => currentTime()); // Computed para reactividad
 
   constructor(
     public habitSignal: HabitSignal,
@@ -28,17 +28,13 @@ export class HomeComponent {
   ) { }
 
   ngOnInit(): void {
-    // Llamamos una vez para obtener el mensaje motivacional al iniciar
     this.motivationalTextService.getMotivationalTextFromModel(
-      "Genera un mensaje motivacional muy corto para inspirar a cumplir objetivos. se creativo y no se repita."
+      "Genera un mensaje motivacional muy corto para inspirar a cumplir objetivos. Se creativo y no se repita."
     ).then(text => {
       this.motivationalText = text;
     }).catch(error => {
       console.error("Error al obtener el mensaje motivacional:", error);
     });
-
-    // Si en algún futuro decidimos que el texto se actualice automáticamente,
-    // podríamos crear un observable o timer que invoque nuevamente el método.
   }
 
   ngOnDestroy(): void {
@@ -48,7 +44,7 @@ export class HomeComponent {
   }
 
   get todayDay(): string {
-    return this.currentDate.toLocaleDateString('es-CL', { weekday: 'long' }).toLowerCase();
+    return currentTime().toLocaleDateString('es-CL', { weekday: 'long' }).toLowerCase();
   }
 
   get todaysHabits(): Habit[] {
@@ -66,17 +62,21 @@ export class HomeComponent {
 
   async onQuickLog(habit: Habit): Promise<void> {
     if (!habit.id) return;
+    
+    const now = currentTime(); // Usa la signal para la fecha actual
+    
     const log = {
       id: Date.now(),
       habitId: habit.id,
-      fecha: new Date().toISOString(),
+      fecha: now.toISOString(), // 🔥 Fecha correctamente ajustada a la zona horaria de Chile
       estado: 'completado' as const,
       cantidadRealizada: 1,
       comentario: undefined
     };
+    
     await this.logSignal.addLog(log);
 
-    const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const todayStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
     const total = this.logSignal.logs()
       .filter(l => l.habitId === habit.id && l.fecha.startsWith(todayStr))
       .reduce((sum, l) => sum + (l.cantidadRealizada || 0), 0);

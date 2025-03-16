@@ -1,8 +1,8 @@
 <div class="home">
     <!-- Fecha y hora en un pequeño recuadro en la esquina -->
     <div class="date-time">
-        <h2>{{ currentDate | date: 'longDate' }}</h2>
-        <p>{{ currentDate | date:'shortTime':'' }}</p>
+        <h2>{{ today() | date: 'longDate' : 'es-CL' }}</h2>
+        <p>{{ today() | date: 'shortTime' : 'es-CL' }}</p>
     </div>
 
     <div class="home-header">
