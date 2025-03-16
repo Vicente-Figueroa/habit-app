@@ -1,0 +1,65 @@
+.log-input {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--sombra-suave);
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.log-input h3 {
+    margin: 0 0 16px;
+    font-size: 1.2rem;
+    color: var(--color-texto);
+    text-align: center;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-texto);
+}
+
+.form-group input[type="date"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primario);
+}
+
+.btn-submit {
+    padding: 12px 24px;
+    background-color: var(--color-primario);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-end;
+    transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: var(--color-secundario);
+}

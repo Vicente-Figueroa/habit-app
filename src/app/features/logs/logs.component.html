@@ -1,0 +1,10 @@
+<div class="logs-container">
+    <h2>📅 Registro de Hábitos</h2>
+
+    <!-- Componente para ingresar un nuevo log -->
+    <app-log-input [habits]="habitSignal.habits()" (addLog)="addLog($event)">
+    </app-log-input>
+
+    <!-- Listado simple de logs -->
+    <app-log-list></app-log-list>
+</div>

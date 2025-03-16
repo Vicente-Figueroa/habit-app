@@ -1,0 +1,53 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Contenido principal */
+.content {
+  flex: 1;
+  padding: 16px;
+  transition: margin-left 0.3s ease;
+}
+
+/* Fondo oscuro (backdrop) */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.backdrop.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Desktop: Sidebar permanente, contenido con margen */
+@media (min-width: 768px) {
+  .content {
+    margin-left: 250px;
+  }
+
+  .backdrop {
+    display: none;
+  }
+}
+
+/* Móviles: Sidebar sobrepuesto sin margen en el contenido */
+@media (max-width: 767px) {
+  .layout {
+    position: relative;
+  }
+
+  .content {
+    margin-left: 0;
+  }
+}

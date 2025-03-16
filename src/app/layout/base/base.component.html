@@ -1,0 +1,12 @@
+<app-header (toggleMenu)="toggleSidebar()"></app-header>
+
+<div class="layout">
+  <!-- Fondo oscuro cuando el sidebar está abierto -->
+  <div class="backdrop" [class.show]="isSidebarOpen()" (click)="toggleSidebar()"></div>
+
+  <app-sidebar [isOpen]="isSidebarOpen()" (closeSidebar)="toggleSidebar()"></app-sidebar>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

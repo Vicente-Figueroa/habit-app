@@ -1,0 +1,8 @@
+<div class="habits-container">
+  <h2>Hábitos</h2>
+  <!-- Formulario para agregar nuevos hábitos -->
+  <app-habit-input [categories]="categories" (addHabit)="addHabit($event)">
+  </app-habit-input>
+  <!-- Listado de hábitos -->
+  <app-habit-list></app-habit-list>
+</div>

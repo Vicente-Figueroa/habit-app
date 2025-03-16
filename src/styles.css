@@ -1,0 +1,32 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+    /* Paleta de colores */
+    --color-fondo: #F7F7F7;
+    /* Fondo neutro */
+    --color-primario: #30F0EC;
+    /* Azul profundo para elementos principales */
+    --color-secundario: #3079F0;
+    /* Verde menta para detalles interactivos */
+    --color-texto: #424242;
+    /* Gris oscuro para textos e íconos */
+    --color-acento: #30F0AB;
+    /* Opcional: acento para destacar elementos */
+
+    /* Sombras y degradados */
+    --sombra-suave: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    --degradado-header: linear-gradient(90deg, #30F0EC, #30B6F0);
+}
+
+/* Aplicación de estilos globales */
+html,
+body {
+    height: 100%;
+    background-color: var(--color-fondo);
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: var(--color-texto);
+}

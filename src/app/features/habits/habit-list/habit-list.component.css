@@ -1,0 +1,168 @@
+/* Lista de hábitos en formato grid */
+.habit-list ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+/* Card de cada hábito */
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: var(--sombra-suave);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+/* Encabezado con ícono y nombre */
+.card-header h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--color-texto);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Colorear el header según el tipo */
+.habit-bueno .card-header h4 {
+    color: #4caf50;
+}
+
+.habit-malo .card-header h4 {
+    color: #f44336;
+}
+
+/* Información del hábito */
+.card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.card-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Íconos en la información */
+.card-info i {
+    color: var(--color-primario);
+}
+
+/* Acciones (editar y borrar) */
+.card-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.card-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: var(--color-primario);
+    transition: color 0.3s;
+}
+
+.card-actions button:hover {
+    color: var(--color-secundario);
+}
+
+/* Estilos para modales (manteniendo la línea) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    max-height: 70vh;
+    background-color: #fff;
+    padding: 16px;
+    /* Se reduce el padding para pantallas pequeñas */
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: var(--sombra-suave);
+    text-align: left;
+    overflow-y: auto;
+    /* Permite hacer scroll si el contenido excede la altura máxima */
+}
+
+.modal h3 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    color: var(--color-texto);
+}
+
+.modal .form-group {
+    margin-bottom: 16px;
+}
+
+.modal .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--color-texto);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.modal .form-group input,
+.modal .form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.modal .form-group input:focus,
+.modal .form-group select:focus {
+    outline: none;
+    border-color: var(--color-primario);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.modal-actions button:first-child {
+    background-color: var(--color-primario);
+    color: #fff;
+}
+
+.modal-actions button:last-child {
+    background-color: #ccc;
+    color: #333;
+}

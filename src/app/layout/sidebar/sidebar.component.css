@@ -1,0 +1,92 @@
+.sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background-color: var(--color-primario);
+    color: #fff;
+    transition: left 0.3s ease;
+    padding-top: 20px;
+    box-shadow: var(--sombra-suave);
+    overflow-y: auto;
+    z-index: 21;
+
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+/* Header del Sidebar */
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+.sidebar-header h2 {
+    margin: 0 0 5px;
+    font-size: 20px;
+}
+
+.sidebar-header p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Botón de cierre */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.close-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Lista de navegación */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+}
+
+.sidebar li {
+    display: block;
+}
+
+/* Estilo para los links */
+.sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.sidebar a i {
+    margin-right: 12px;
+    font-size: 18px;
+}
+
+.sidebar a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Separador entre items */
+.divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 0 20px;
+}

@@ -1,0 +1,39 @@
+<div class="daily-habits">
+    <h3>Hábitos de Hoy</h3>
+    <div class="habits-grid">
+        <div *ngFor="let habit of habits" class="habit-card">
+            <div class="card-header">
+                <h4 [ngStyle]="{'color': habit.tipo==='bueno' ? '#4caf50' : '#f44336'}">
+                    <i class="fas" [ngClass]="{'fa-smile': habit.tipo==='bueno', 'fa-frown': habit.tipo==='malo'}"
+                        [ngStyle]="{'color': habit.tipo==='bueno' ? '#4caf50' : '#f44336'}"></i>
+                    {{ habit.nombre }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <!-- Se muestra la descripción solo si existe y es breve -->
+                <p *ngIf="habit.descripcion" class="description">{{ habit.descripcion }}</p>
+                <p class="meta">
+                    <i class="fas fa-bullseye"></i>
+                    <strong>Meta:</strong> {{ habit.objetivo }} {{ habit.unidadObjetivo }} - {{ habit.frecuencia }}
+                </p>
+                <ng-container [ngSwitch]="habit.tipo">
+                    <p *ngSwitchCase="'bueno'" class="progress">
+                        <i class="fas fa-chart-line" [style.color]="getProgressColor(habit)"></i>
+                        Progreso: <span [style.color]="getProgressColor(habit)">{{ getProgress(habit) }}</span> / {{
+                        habit.objetivo }}
+                    </p>
+                    <p *ngSwitchCase="'malo'" class="incidences">
+                        <i class="fas fa-exclamation-triangle" [style.color]="getProgressColor(habit)"></i>
+                        Incidencias: <span [style.color]="getProgressColor(habit)">{{ getProgress(habit) }}</span>
+                    </p>
+                </ng-container>
+            </div>
+            <div class="card-actions">
+                <button (click)="registerQuickLog(habit)" class="quick-log-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    Registro Rápido
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

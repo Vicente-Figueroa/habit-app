@@ -1,0 +1,69 @@
+<div class="habit-input-container">
+  <button class="toggle-btn" (click)="toggleForm()">
+    <i class="fas" [ngClass]="{'fa-plus': !isOpen, 'fa-minus': isOpen}"></i>
+    {{ isOpen ? 'Cerrar formulario' : 'Abrir formulario' }}
+  </button>
+
+  <div *ngIf="isOpen" class="habit-input">
+    <h3>Agregar Nuevo Hábito</h3>
+    <form (submit)="onSubmit($event)">
+      <div class="form-group">
+        <label for="habitName">Nombre</label>
+        <input id="habitName" type="text" [(ngModel)]="habitName" name="habitName" placeholder="Nombre del hábito" required>
+      </div>
+      <div class="form-group">
+        <label for="habitDescription">Descripción</label>
+        <input id="habitDescription" type="text" [(ngModel)]="habitDescription" name="habitDescription" placeholder="Descripción" required>
+      </div>
+      <div class="form-group">
+        <label>Tipo</label>
+        <select [(ngModel)]="habitType" name="habitType">
+          <option value="bueno">Bueno</option>
+          <option value="malo">Malo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Frecuencia</label>
+        <select [(ngModel)]="habitFrequency" name="habitFrequency">
+          <option value="diario">Diario</option>
+          <option value="semanal">Semanal</option>
+          <option value="mensual">Mensual</option>
+          <option value="ocasional">Ocasional</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="habitObjective">Objetivo</label>
+        <input id="habitObjective" type="number" [(ngModel)]="habitObjective" name="habitObjective" min="1" required>
+      </div>
+      <div class="form-group">
+        <label for="habitUnit">Unidad</label>
+        <input id="habitUnit" type="text" [(ngModel)]="habitUnit" name="habitUnit" placeholder="minutos, veces, etc." required>
+      </div>
+      <div class="form-group">
+        <label for="habitCategory">Categoría</label>
+        <select [(ngModel)]="selectedCategory" name="selectedCategory" id="habitCategory">
+          <option [ngValue]="null">Sin categoría</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.nombre }}</option>
+        </select>
+      </div>
+      <div class="form-group days-group">
+        <label>Días de la Semana (opcional)</label>
+        <div class="days-options">
+          <div *ngFor="let day of daysOfWeek" class="day-option">
+            <input type="checkbox" [(ngModel)]="day.selected" [name]="day.value" [id]="day.value">
+            <label [for]="day.value">{{ day.name }}</label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="habitInicio">Horario Inicio (opcional)</label>
+        <input id="habitInicio" type="time" [(ngModel)]="habitInicio" name="habitInicio">
+      </div>
+      <div class="form-group">
+        <label for="habitFin">Horario Fin (opcional)</label>
+        <input id="habitFin" type="time" [(ngModel)]="habitFin" name="habitFin">
+      </div>
+      <button type="submit" class="btn-submit">Agregar Hábito</button>
+    </form>
+  </div>
+</div>

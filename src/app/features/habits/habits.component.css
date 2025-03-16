@@ -1,0 +1,11 @@
+.habits-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.habits-container h2 {
+    text-align: center;
+    color: var(--color-texto);
+    margin-bottom: 24px;
+}

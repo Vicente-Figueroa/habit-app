@@ -1,0 +1,23 @@
+<div class="home">
+    <!-- Fecha y hora en un pequeño recuadro en la esquina -->
+    <div class="date-time">
+        <h2>{{ currentDate | date: 'longDate' }}</h2>
+        <p>{{ currentDate | date:'shortTime':'' }}</p>
+    </div>
+
+    <div class="home-header">
+        <h1>Bienvenido a la App de Hábitos</h1>
+        <p>Gestiona y sigue tus hábitos diarios sin esfuerzo.</p>
+    </div>
+
+    <!-- Componente que muestra los hábitos diarios -->
+    <app-daily-habits [habits]="todaysHabits" [logs]="logSignal.logs()" (quickLog)="onQuickLog($event)"></app-daily-habits>
+
+    <!-- Modal de confirmación -->
+    <div class="modal-overlay" *ngIf="showConfirmation">
+        <div class="modal">
+            <p>{{ confirmationMessage }}</p>
+            <button (click)="closeConfirmation()">Cerrar</button>
+        </div>
+    </div>
+</div>

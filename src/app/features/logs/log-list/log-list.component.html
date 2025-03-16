@@ -1,0 +1,91 @@
+<div class="log-list">
+    <ul>
+        <li *ngFor="let log of logSignal.logs()">
+            <div class="log-card">
+                <div class="log-info">
+                    <p>
+                        <strong>{{ getHabitName(log.habitId) }}</strong>
+                    </p>
+                    <p>
+                        <i class="fas fa-calendar-alt"></i>
+                        Fecha: {{ log.fecha | date:'shortDate' }}
+                    </p>
+                    <p>
+                        <i class="fas fa-check-circle"></i>
+                        Estado: {{ log.estado | titlecase }}
+                    </p>
+                    <p *ngIf="log.cantidadRealizada">
+                        <i class="fas fa-sort-numeric-up"></i>
+                        Cantidad: {{ log.cantidadRealizada }}
+                    </p>
+                    <p *ngIf="log.comentario">
+                        <i class="fas fa-comment"></i>
+                        Comentario: {{ log.comentario }}
+                    </p>
+                </div>
+                <div class="log-actions">
+                    <button class="edit-btn" (click)="openEditModal(log)">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-btn" (click)="confirmDelete(log)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<!-- Modal de edición -->
+<div class="modal-overlay" *ngIf="editingLog">
+    <div class="modal">
+        <h3>Editar Registro</h3>
+        <div class="form-group">
+            <label>Hábito</label>
+            <select [(ngModel)]="editHabitId">
+                <option *ngFor="let habit of habitSignal.habits()" [value]="habit.id">
+                    {{ habit.nombre }}
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Fecha</label>
+            <input type="date" [(ngModel)]="editDate">
+        </div>
+        <div class="form-group">
+            <label>Estado</label>
+            <select [(ngModel)]="editState">
+                <option value="completado">Completado</option>
+                <option value="parcial">Parcial</option>
+                <option value="no completado">No completado</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Cantidad Realizada</label>
+            <input type="number" [(ngModel)]="editAmount" min="0">
+        </div>
+        <div class="form-group">
+            <label>Comentario</label>
+            <textarea [(ngModel)]="editComment" placeholder="Comentario (opcional)"></textarea>
+        </div>
+        <div class="modal-actions">
+            <button (click)="saveEdit()">Guardar</button>
+            <button (click)="closeEditModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación para borrar -->
+<div class="modal-overlay" *ngIf="showDeleteConfirm">
+    <div class="modal">
+        <h3>Confirmar Borrado</h3>
+        <p>
+            ¿Está seguro de que desea borrar el registro para el hábito
+            <strong *ngIf=" logToDelete && logToDelete.habitId">{{ getHabitName(logToDelete.habitId) }}</strong>?
+        </p>
+        <div class="modal-actions">
+            <button (click)="deleteLog()">Sí, borrar</button>
+            <button (click)="cancelDelete()">Cancelar</button>
+        </div>
+    </div>
+</div>

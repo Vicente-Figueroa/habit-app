@@ -1,0 +1,34 @@
+<div class="log-input">
+    <h3>Agregar Nuevo Registro</h3>
+    <form (submit)="onSubmit($event)">
+        <div class="form-group">
+            <label for="logHabit">Hábito</label>
+            <select id="logHabit" [(ngModel)]="selectedHabit" name="selectedHabit" required>
+                <option [ngValue]="null">Seleccione un hábito</option>
+                <option *ngFor="let habit of habits" [value]="habit.id">{{ habit.nombre }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="logDate">Fecha</label>
+            <input id="logDate" type="date" [(ngModel)]="logDate" name="logDate" required>
+        </div>
+        <div class="form-group">
+            <label for="logState">Estado</label>
+            <select id="logState" [(ngModel)]="logState" name="logState">
+                <option value="completado">Completado</option>
+                <option value="parcial">Parcial</option>
+                <option value="no completado">No completado</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="logAmount">Cantidad Realizada</label>
+            <input id="logAmount" type="number" [(ngModel)]="logAmount" name="logAmount" min="0">
+        </div>
+        <div class="form-group">
+            <label for="logComment">Comentario</label>
+            <textarea id="logComment" [(ngModel)]="logComment" name="logComment"
+                placeholder="Comentario (opcional)"></textarea>
+        </div>
+        <button type="submit" class="btn-submit">Agregar Registro</button>
+    </form>
+</div>

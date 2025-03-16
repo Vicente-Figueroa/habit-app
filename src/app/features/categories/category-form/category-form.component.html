@@ -1,0 +1,23 @@
+<form (submit)="onSubmit($event)" class="category-form">
+    <div class="form-group">
+        <label for="categoryName">Nombre</label>
+        <input id="categoryName" type="text" [(ngModel)]="categoryName" name="categoryName"
+            placeholder="Nombre de la categoría" required />
+    </div>
+
+    <div class="form-group">
+        <label for="categoryDescription">Descripción</label>
+        <input id="categoryDescription" type="text" [(ngModel)]="categoryDescription" name="categoryDescription"
+            placeholder="Descripción" required />
+    </div>
+
+    <div class="form-group satisfaction-group">
+        <label for="categorySatisfaction">
+            Nivel de satisfacción: {{ categorySatisfaction }}
+        </label>
+        <input id="categorySatisfaction" type="range" [(ngModel)]="categorySatisfaction" name="categorySatisfaction"
+            min="1" max="10" />
+    </div>
+
+    <button type="submit" class="btn-submit">Agregar Categoría</button>
+</form>

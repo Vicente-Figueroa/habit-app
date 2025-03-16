@@ -1,0 +1,60 @@
+<div class="category-list">
+    <ul>
+        <li *ngFor="let category of categorySignal.categories()">
+            <div class="card">
+                <div class="card-info">
+                    <h4>{{ category.nombre }}</h4>
+                    <p>{{ category.descripcion }}</p>
+                    <span *ngIf = "category.satisfaccion" class="satisfaction" [ngClass]="{
+                      'low': category.satisfaccion < 4,
+                      'medium': category.satisfaccion >= 4 && category.satisfaccion < 8,
+                      'high': category.satisfaccion >= 8
+                    }">🌟 {{ category.satisfaccion }}/10</span>
+                </div>
+                <div class="card-actions">
+                    <button class="edit-btn" (click)="openEditModal(category)">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-btn" (click)="confirmDelete(category)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<!-- Modal de edición -->
+<div class="modal-overlay" *ngIf="editingCategory">
+    <div class="modal">
+        <h3>Editar Categoría</h3>
+        <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" [(ngModel)]="editName" />
+        </div>
+        <div class="form-group">
+            <label>Descripción</label>
+            <input type="text" [(ngModel)]="editDescription" />
+        </div>
+        <div class="form-group satisfaction-group">
+            <label>Satisfacción: {{ editSatisfaction }}</label>
+            <input type="range" min="1" max="10" [(ngModel)]="editSatisfaction" />
+        </div>
+        <div class="modal-actions">
+            <button (click)="saveEdit()">Guardar</button>
+            <button (click)="closeEditModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación para borrar -->
+<div class="modal-overlay" *ngIf="showDeleteConfirm">
+    <div class="modal">
+        <h3>Confirmar Borrado</h3>
+        <p>¿Estás seguro de que deseas borrar la categoría <strong>{{ categoryToDelete?.nombre }}</strong>?</p>
+        <div class="modal-actions">
+            <button (click)="deleteCategory()">Sí, borrar</button>
+            <button (click)="cancelDelete()">Cancelar</button>
+        </div>
+    </div>
+</div>

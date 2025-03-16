@@ -1,0 +1,45 @@
+<nav class="sidebar" [class.open]="isOpen">
+  <div class="sidebar-header">
+    <h2>Mi App de Hábitos</h2>
+    <p>¡Organiza tus hábitos de forma fácil!</p>
+  </div>
+  <button class="close-btn" (click)="closeMenu()">
+    <i class="fas fa-times"></i>
+  </button>
+  <ul>
+    <li (click)="closeMenu()">
+      <a routerLink="/home">
+        <i class="fas fa-home"></i>
+        <span>Inicio</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li (click)="closeMenu()">
+      <a routerLink="/categories">
+        <i class="fas fa-folder-open"></i>
+        <span>Categorías</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li (click)="closeMenu()">
+      <a routerLink="/habits">
+        <i class="fas fa-tasks"></i>
+        <span>Hábitos</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li (click)="closeMenu()">
+      <a routerLink="/logs">
+        <i class="fas fa-clipboard-list"></i>
+        <span>Registros</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li (click)="closeMenu()">
+      <a routerLink="/reports">
+        <i class="fas fa-chart-bar"></i>
+        <span>Reportes</span>
+      </a>
+    </li>
+  </ul>
+</nav>
