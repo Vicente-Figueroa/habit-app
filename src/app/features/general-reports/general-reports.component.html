@@ -1,1 +1,10 @@
-<app-general-stats [habitos]="habitSignal.habits()" [registros]="logSignal.logs()"></app-general-stats>
+<div *ngIf="habitSignal.habits().length > 0 && logSignal.logs().length > 0" class="general-reports-container">
+    <app-general-stats [habitos]="habitSignal.habits()" [registros]="logSignal.logs()">
+    </app-general-stats>
+    <br>
+    <app-frequency-analysis [habitos]="habitSignal.habits()" [registros]="logSignal.logs()">
+    </app-frequency-analysis>
+    <br>
+    <app-evolution-charts [habitos]="habitSignal.habits()" [registros]="logSignal.logs()"></app-evolution-charts>
+
+</div>

@@ -1,0 +1,43 @@
+.general-reports-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.chart-container {
+    margin-top: 20px;
+    position: relative;
+    width: 100%;
+    height: 300px;
+    /* Altura fija para gráficos */
+}
+
+@media (min-width: 768px) {
+    .general-reports-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        max-width: 80vw;
+    }
+
+    .chart-container {
+        width: 48%;
+        /* Dos gráficos por fila en pantallas más grandes */
+        margin: 1%;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .general-reports-container {
+        max-width: 85vw;
+    }
+
+}

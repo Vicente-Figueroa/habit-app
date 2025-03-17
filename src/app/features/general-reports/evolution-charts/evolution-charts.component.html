@@ -1,0 +1,15 @@
+<div class="evolution-container">
+    <h3>📊 Gráficos de Evolución</h3>
+
+    <div class="chart-container">
+        <h4>📈 Tendencia General del Cumplimiento</h4>
+        <canvas baseChart [data]="lineChartData" [type]="lineChartType" [options]="lineChartOptions">
+        </canvas>
+    </div>
+
+    <div class="chart-container margin-top-extra">
+        <h4>📊 Comparación Última Semana vs. Mes Pasado</h4>
+        <canvas baseChart [data]="barChartData" [type]="barChartType" [options]="barChartOptions">
+        </canvas>
+    </div>
+</div>

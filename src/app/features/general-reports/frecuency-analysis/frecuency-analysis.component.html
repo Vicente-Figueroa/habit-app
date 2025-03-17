@@ -1,0 +1,25 @@
+<div class="frequency-container">
+    <h3>📅 Análisis de Frecuencia</h3>
+
+    <div class="stat-item">
+        <span>📌 Día con mayor cumplimiento:</span>
+        <strong>{{ diaMayorCumplimiento() }}</strong>
+    </div>
+
+    <div class="stat-item">
+        <span>📉 Día con menor cumplimiento:</span>
+        <strong>{{ diaMenorCumplimiento() }}</strong>
+    </div>
+
+    <div class="chart-container">
+        <h4>📊 Distribución de hábitos por día de la semana</h4>
+        <canvas baseChart [data]="barChartData" [type]="barChartType" [options]="barChartOptions">
+        </canvas>
+    </div>
+
+    <div class="chart-container">
+        <h4>🕒 Horarios en los que más se cumplen hábitos</h4>
+        <canvas baseChart [data]="lineChartData" [type]="lineChartType" [options]="lineChartOptions">
+        </canvas>
+    </div>
+</div>
