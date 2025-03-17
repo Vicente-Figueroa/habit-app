@@ -1,0 +1,34 @@
+<div class="stats-container">
+    <h3>📊 Estadísticas Generales</h3>
+  
+    <div class="stat-item">
+      <span>Total de Hábitos Activos:</span>
+      <strong>{{ totalHabitosActivos }}</strong>
+    </div>
+  
+    <div class="stat-item">
+      <span>Total de Hábitos Inactivos:</span>
+      <strong>{{ totalHabitosInactivos }}</strong>
+    </div>
+  
+    <div class="stat-item">
+      <span>Promedio de Hábitos Completados por Día:</span>
+      <strong>{{ promedioPorDia | number: '1.1-1' }}</strong>
+    </div>
+  
+    <div class="stat-item">
+      <span>Promedio de Hábitos Completados por Semana:</span>
+      <strong>{{ promedioPorSemana | number: '1.1-1' }}</strong>
+    </div>
+  
+    <div class="stat-item">
+      <span>Promedio de Hábitos Completados por Mes:</span>
+      <strong>{{ promedioPorMes | number: '1.1-1' }}</strong>
+    </div>
+  
+    <div class="stat-item">
+      <span>Porcentaje General de Cumplimiento:</span>
+      <strong>{{ porcentajeCumplimiento | number: '1.1-1' }}%</strong>
+    </div>
+  </div>
+  

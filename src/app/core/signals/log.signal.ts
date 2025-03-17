@@ -13,7 +13,6 @@ export class LogSignal {
     public logs = computed(() => this._logs());
 
     constructor() {
-        this.loadLogs();
     }
 
     async loadLogs() {
