@@ -1,8 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Habit } from '../../../core/models/habit.model';
 import { Log } from '../../../core/models/log.model';
 import { currentTime } from '../../../core/signals/time.signal';
+
+interface HabitsGrouped {
+  [key: string]: Habit[];
+}
 
 @Component({
   selector: 'app-daily-habits',
@@ -10,16 +14,38 @@ import { currentTime } from '../../../core/signals/time.signal';
   templateUrl: './daily-habits.component.html',
   styleUrls: ['./daily-habits.component.css']
 })
-export class DailyHabitsComponent {
+export class DailyHabitsComponent implements OnInit {
   @Input() habits: Habit[] = [];
   @Input() logs: Log[] = [];
 
   @Output() quickLog: EventEmitter<Habit> = new EventEmitter<Habit>();
 
+  groupedHabits: HabitsGrouped = {
+    diario: [],
+    semanal: [],
+    mensual: [],
+    ocasional: []
+  };
+
+  ngOnInit() {
+    this.groupHabits();
+  }
+
+  ngOnChanges() {
+    this.groupHabits();
+  }
+
+  private groupHabits() {
+    this.groupedHabits = {
+      diario: this.habits.filter(h => h.frecuencia === 'diario'),
+      semanal: this.habits.filter(h => h.frecuencia === 'semanal'),
+      mensual: this.habits.filter(h => h.frecuencia === 'mensual'),
+      ocasional: this.habits.filter(h => h.frecuencia === 'ocasional')
+    };
+  }
+
   getProgress(habit: Habit): number {
     let logsForPeriod: Log[] = [];
-
-    // Obtener la fecha actual desde la signal
     const today = currentTime();
     const todayStr = today.toISOString().split('T')[0];
 
@@ -28,12 +54,12 @@ export class DailyHabitsComponent {
         log.habitId === habit.id && log.fecha.startsWith(todayStr)
       );
     } else if (habit.frecuencia === 'semanal') {
-      const dayOfWeek = today.getDay(); // 0: domingo, 1: lunes, etc.
+      const dayOfWeek = today.getDay();
       const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
       const startOfWeek = new Date(today);
       startOfWeek.setDate(today.getDate() - diff);
       startOfWeek.setHours(0, 0, 0, 0);
-      
+
       const endOfWeek = new Date(startOfWeek);
       endOfWeek.setDate(startOfWeek.getDate() + 6);
       endOfWeek.setHours(23, 59, 59, 999);
