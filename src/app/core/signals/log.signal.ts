@@ -12,7 +12,14 @@ export class LogSignal {
     // Signal computed para exponer los logs de forma reactiva
     public logs = computed(() => this._logs());
 
-    constructor() {
+    constructor(db: DbService) {
+        this.db = db;
+        this.init();
+    }
+
+    async init() {
+        await this.db.waitForDBReady();
+        await this.loadLogs();
     }
 
     async loadLogs() {

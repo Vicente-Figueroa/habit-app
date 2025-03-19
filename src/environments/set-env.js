@@ -10,8 +10,6 @@ function setEnv() {
       googleAiApiKey: "${googleAiApiKey}"
     };`;
 
-    console.log(`Google AI API Key: ${googleAiApiKey}`);
-
     // Ruta del archivo de entorno
     const targetPath = './src/environments/environment.ts';
 

@@ -27,6 +27,8 @@ export class DailyHabitsComponent implements OnInit {
     ocasional: []
   };
 
+  completedGoodHabits: Habit[] = [];
+
   ngOnInit() {
     this.groupHabits();
   }
@@ -42,6 +44,11 @@ export class DailyHabitsComponent implements OnInit {
       mensual: this.habits.filter(h => h.frecuencia === 'mensual'),
       ocasional: this.habits.filter(h => h.frecuencia === 'ocasional')
     };
+
+    this.completedGoodHabits = this.habits.filter(habit => 
+      habit.tipo === 'bueno' && this.getProgress(habit) >= habit.objetivo
+    );
+
   }
 
   getProgress(habit: Habit): number {

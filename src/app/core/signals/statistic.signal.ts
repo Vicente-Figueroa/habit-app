@@ -32,8 +32,6 @@ export class StatisticSignal {
         const habits = this.habitSignal.habits();
         const logs = this.logSignal.logs();
 
-        console.log('DEBUG: Todos los logs en la App =>', logs);
-
         habits.forEach((habit: Habit) => {
             // Filtrar logs para el hábito actual y ordenarlos ascendentemente
             const habitLogs = logs
@@ -41,9 +39,6 @@ export class StatisticSignal {
                 .filter(log => Number(log.habitId) === habit.id)
                 .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
 
-            console.log(`\n[DEBUG] Hábito "${habit.nombre}" (ID: ${habit.id}):`);
-            console.log('DiasSemana:', habit.diasSemana || 'No definido');
-            console.log('Logs originales:', habitLogs);
 
             // Calcular racha y % de cumplimiento según la frecuencia
             const { rachaActual, rachaMaxima } = this.calculateStreaks(habitLogs, habit);
@@ -62,8 +57,6 @@ export class StatisticSignal {
                 }, 0);
                 porcentajeCumplimiento = habit.objetivo > 0 ? Math.min((total / habit.objetivo) * 100, 100) : 0;
             }
-
-            console.log(`Racha Actual: ${rachaActual}, Racha Máxima: ${rachaMaxima}, Cumplimiento: ${porcentajeCumplimiento}%`);
 
             stats.push({
                 habitId: habit.id!,
@@ -195,8 +188,6 @@ export class StatisticSignal {
             groups.get(key)!.push(log);
         });
 
-        console.log(`${period.toUpperCase()} => grupos formados:`, groups);
-
         // Determinar qué períodos son exitosos
         const periodKeys = Array.from(groups.keys()).sort();
         const successPeriods = periodKeys.map(key => {
@@ -209,7 +200,6 @@ export class StatisticSignal {
                 return acc;
             }, 0);
             const success = total >= habit.objetivo;
-            console.log(`Periodo ${key} => total: ${total}, objetivo: ${habit.objetivo}, success: ${success}`);
             return { key, success };
         });
 

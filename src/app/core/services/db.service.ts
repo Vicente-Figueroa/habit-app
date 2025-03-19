@@ -11,7 +11,11 @@ export class DbService {
   constructor() {
     this.initDB();
   }
-
+  async waitForDBReady() {
+    while (!this.dbReady()) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
   async initDB() {
     try {
       this.db = await openDB('HabitDB', 1, {
