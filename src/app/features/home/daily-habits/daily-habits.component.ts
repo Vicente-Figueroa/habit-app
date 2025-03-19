@@ -38,6 +38,9 @@ export class DailyHabitsComponent implements OnInit {
   }
 
   private groupHabits() {
+    const today = currentTime();
+    const todayStr = today.toISOString().split('T')[0];
+
     this.groupedHabits = {
       diario: this.habits.filter(h => h.frecuencia === 'diario'),
       semanal: this.habits.filter(h => h.frecuencia === 'semanal'),
@@ -45,10 +48,9 @@ export class DailyHabitsComponent implements OnInit {
       ocasional: this.habits.filter(h => h.frecuencia === 'ocasional')
     };
 
-    this.completedGoodHabits = this.habits.filter(habit => 
+    this.completedGoodHabits = this.habits.filter(habit =>
       habit.tipo === 'bueno' && this.getProgress(habit) >= habit.objetivo
     );
-
   }
 
   getProgress(habit: Habit): number {
@@ -61,15 +63,15 @@ export class DailyHabitsComponent implements OnInit {
         log.habitId === habit.id && log.fecha.startsWith(todayStr)
       );
     } else if (habit.frecuencia === 'semanal') {
-      const dayOfWeek = today.getDay();
+      const dayOfWeek = today.getUTCDay();
       const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
       const startOfWeek = new Date(today);
-      startOfWeek.setDate(today.getDate() - diff);
-      startOfWeek.setHours(0, 0, 0, 0);
+      startOfWeek.setUTCDate(today.getUTCDate() - diff);
+      startOfWeek.setUTCHours(0, 0, 0, 0);
 
       const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6);
-      endOfWeek.setHours(23, 59, 59, 999);
+      endOfWeek.setUTCDate(startOfWeek.getUTCDate() + 6);
+      endOfWeek.setUTCHours(23, 59, 59, 999);
 
       logsForPeriod = this.logs.filter(log => {
         if (log.habitId !== habit.id) return false;
@@ -77,12 +79,12 @@ export class DailyHabitsComponent implements OnInit {
         return logDate >= startOfWeek && logDate <= endOfWeek;
       });
     } else if (habit.frecuencia === 'mensual') {
-      const currentMonth = today.getMonth();
-      const currentYear = today.getFullYear();
+      const currentMonth = today.getUTCMonth();
+      const currentYear = today.getUTCFullYear();
       logsForPeriod = this.logs.filter(log => {
         if (log.habitId !== habit.id) return false;
         const logDate = new Date(log.fecha);
-        return logDate.getMonth() === currentMonth && logDate.getFullYear() === currentYear;
+        return logDate.getUTCMonth() === currentMonth && logDate.getUTCFullYear() === currentYear;
       });
     }
 
