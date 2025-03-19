@@ -1,0 +1,24 @@
+<div class="sync-form">
+    <h2>Sincronización de Datos</h2>
+
+    <!-- Indicador de carga -->
+    <div *ngIf="isLoading" class="loading-indicator">
+        Procesando, por favor espera...
+    </div>
+
+    <!-- Mensajes de éxito / error -->
+    <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+    <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+
+    <div class="form-group">
+        <label>Exportar datos (descargar backup JSON)</label>
+        <button class="btn-submit" (click)="onExportData()">
+            Descargar Backup
+        </button>
+    </div>
+
+    <div class="form-group">
+        <label for="fileInput">Importar datos (cargar backup JSON)</label>
+        <input type="file" id="fileInput" accept=".json" (change)="onFileSelected($event)" />
+    </div>
+</div>

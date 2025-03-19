@@ -1,0 +1,84 @@
+.sync-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.3s ease;
+}
+
+.sync-form:hover {
+    transform: translateY(-2px);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--color-texto);
+    font-size: 0.9rem;
+}
+
+.form-group input[type='file'] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--color-primario);
+}
+
+.btn-submit {
+    align-self: flex-start;
+    padding: 10px 20px;
+    background-color: var(--color-primario);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: var(--color-secundario);
+}
+
+/* Alertas de éxito o error */
+.alert {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.alert.success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.alert.error {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+/* Indicador de carga */
+.loading-indicator {
+    background-color: #fff3cd;
+    padding: 10px;
+    border-radius: 6px;
+    color: #664d03;
+    font-weight: 600;
+    margin-bottom: 8px;
+}

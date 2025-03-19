@@ -6,6 +6,7 @@ import { HabitsComponent } from './features/habits/habits.component';
 import { LogsComponent } from './features/logs/logs.component';
 import { HabitStreaksComponent } from './features/habit-streaks/habit-streaks.component';
 import { GeneralReportsComponent } from './features/general-reports/general-reports.component';
+import { SyncComponent } from './features/sync/sync.component';
 
 export const routes: Routes = [
     {
@@ -14,6 +15,7 @@ export const routes: Routes = [
         children: [
             { path: '', component: HomeComponent },
             { path: 'categories', component: CategoriesComponent },
+            { path: 'sync', component: SyncComponent },
             { path: 'habits', component: HabitsComponent },
             { path: 'logs', component: LogsComponent },
             { path: 'habits-streaks', component: HabitStreaksComponent },
