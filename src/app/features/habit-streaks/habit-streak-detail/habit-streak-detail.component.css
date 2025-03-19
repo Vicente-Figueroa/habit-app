@@ -1,0 +1,73 @@
+/* Botón para ver/ocultar detalles */
+.details-toggle-button {
+    background-color: var(--color-primario);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 8px;
+}
+
+.details-toggle-button:hover {
+    /* Ajusta el color hover a tu gusto */
+    background-color: #2c81ac;
+}
+
+/* Contenedor principal del detalle */
+.habit-streak-detail {
+    margin-top: 8px;
+    background-color: #fafafa;
+    border-left: 4px solid var(--color-primario);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+/* Lista de logs */
+.habit-streak-detail ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.habit-streak-detail li {
+    margin-bottom: 4px;
+    color: #555;
+    position: relative;
+    padding-left: 18px;
+    /* para que no quede el texto pegado al bullet */
+}
+
+/* Puedes usar un pseudo-elemento como bullet */
+.habit-streak-detail li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--color-primario);
+    font-weight: bold;
+}
+
+/* Separador */
+.habit-streak-detail hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 12px 0;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 600px) {
+    .details-toggle-button {
+        font-size: 0.85rem;
+        padding: 4px 8px;
+    }
+
+    .habit-streak-detail {
+        padding: 6px;
+    }
+
+    .habit-streak-detail li {
+        margin-bottom: 2px;
+    }
+}

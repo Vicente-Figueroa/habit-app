@@ -1,0 +1,15 @@
+<button class="details-toggle-button" (click)="toggleDetails(stat.habitId)">
+    {{ expandedHabitId() === stat.habitId ? 'Ocultar detalles' : 'Ver detalles' }}
+</button>
+
+<div class="habit-streak-detail" *ngIf="expandedHabitId() === stat.habitId">
+    <ul>
+        <li *ngFor="let log of getLogsForHabit(stat.habitId)">
+            {{ log.fecha | date }} - {{ log.estado }}
+            <span *ngIf="log.cantidadRealizada">
+                ({{ log.cantidadRealizada }} {{ getHabitUnit(stat.habitId) }})
+            </span>
+        </li>
+    </ul>
+    <hr />
+</div>

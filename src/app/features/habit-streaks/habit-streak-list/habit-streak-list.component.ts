@@ -3,10 +3,11 @@ import { Statistic } from '../../../core/models/statistic.model';
 import { CommonModule } from '@angular/common';
 import { HabitSignal } from '../../../core/signals/habit.signal';
 import { Habit } from '../../../core/models/habit.model';
+import { HabitStreakDetailComponent } from '../habit-streak-detail/habit-streak-detail.component';
 
 @Component({
   selector: 'app-habit-streak-list',
-  imports: [CommonModule],
+  imports: [CommonModule, HabitStreakDetailComponent],
   templateUrl: './habit-streak-list.component.html',
   styleUrls: ['./habit-streak-list.component.css']
 })
