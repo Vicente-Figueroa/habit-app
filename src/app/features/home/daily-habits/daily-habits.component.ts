@@ -60,18 +60,16 @@ export class DailyHabitsComponent implements OnInit {
 
     if (habit.frecuencia === 'diario' || habit.frecuencia === 'ocasional') {
       logsForPeriod = this.logs.filter(log =>
-        log.habitId === habit.id && log.fecha.startsWith(todayStr)
+        log.habitId === habit.id && this.isSameDay(log.fecha, today)
       );
     } else if (habit.frecuencia === 'semanal') {
-      const dayOfWeek = today.getUTCDay();
-      const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
       const startOfWeek = new Date(today);
-      startOfWeek.setUTCDate(today.getUTCDate() - diff);
-      startOfWeek.setUTCHours(0, 0, 0, 0);
+      startOfWeek.setDate(today.getDate() - today.getDay() + 1); // Lunes como inicio de semana
+      startOfWeek.setHours(0, 0, 0, 0);
 
       const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setUTCDate(startOfWeek.getUTCDate() + 6);
-      endOfWeek.setUTCHours(23, 59, 59, 999);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
 
       logsForPeriod = this.logs.filter(log => {
         if (log.habitId !== habit.id) return false;
@@ -79,16 +77,23 @@ export class DailyHabitsComponent implements OnInit {
         return logDate >= startOfWeek && logDate <= endOfWeek;
       });
     } else if (habit.frecuencia === 'mensual') {
-      const currentMonth = today.getUTCMonth();
-      const currentYear = today.getUTCFullYear();
+      const currentMonth = today.getMonth();
+      const currentYear = today.getFullYear();
       logsForPeriod = this.logs.filter(log => {
         if (log.habitId !== habit.id) return false;
         const logDate = new Date(log.fecha);
-        return logDate.getUTCMonth() === currentMonth && logDate.getUTCFullYear() === currentYear;
+        return logDate.getMonth() === currentMonth && logDate.getFullYear() === currentYear;
       });
     }
 
     return logsForPeriod.reduce((sum, log) => sum + (log.cantidadRealizada || 0), 0);
+  }
+
+  private isSameDay(logDateStr: string, today: Date): boolean {
+    const logDate = new Date(logDateStr);
+    return logDate.getFullYear() === today.getFullYear() &&
+      logDate.getMonth() === today.getMonth() &&
+      logDate.getDate() === today.getDate();
   }
 
   getProgressColor(habit: Habit): string {
