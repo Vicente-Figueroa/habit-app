@@ -44,9 +44,21 @@ export class StatisticSignal {
             const { rachaActual, rachaMaxima } = this.calculateStreaks(habitLogs, habit);
             let porcentajeCumplimiento = 0;
             if (habit.frecuencia === 'diario') {
-                const totalLogs = habitLogs.length;
-                const completedLogs = habitLogs.filter(log => this.isCompleted(log, habit)).length;
-                porcentajeCumplimiento = totalLogs > 0 ? (completedLogs / totalLogs) * 100 : 0;
+                // **Agrupar logs por día y sumar las cantidades**
+                const daysMap = new Map<string, number>();
+                habitLogs.forEach(log => {
+                    if (log.estado !== 'completado') return;
+                    const dayKey = this.formatDayKey(new Date(log.fecha));
+                    const cantidad = (typeof log.cantidadRealizada === 'number') ? log.cantidadRealizada : 1;
+                    daysMap.set(dayKey, (daysMap.get(dayKey) ?? 0) + cantidad);
+                });
+
+                // **Contar los días en que se alcanzó la meta**
+                const totalDays = daysMap.size;
+                const successfulDays = Array.from(daysMap.values()).filter(total => total >= habit.objetivo).length;
+
+                // **Calcular el porcentaje de cumplimiento correctamente**
+                porcentajeCumplimiento = totalDays > 0 ? (successfulDays / totalDays) * 100 : 0;
             } else {
                 // Para hábitos semanales o mensuales, sumamos las cantidades de logs completados sin exigir que cada log cumpla individualmente
                 const total = habitLogs.reduce((acc, log) => {
@@ -108,7 +120,8 @@ export class StatisticSignal {
      */
     private calculateDailyStreaks(logs: Log[], habit: Habit): { rachaActual: number, rachaMaxima: number } {
         let filteredLogs = logs;
-        // Filtrado por días de la semana (si aplica)
+
+        // Filtrar logs por los días específicos del hábito (si aplica)
         if (habit.diasSemana && habit.diasSemana.length > 0) {
             filteredLogs = logs.filter(log => {
                 const dayName = new Date(log.fecha).toLocaleDateString('es-ES', { weekday: 'long' }).toLowerCase();
@@ -116,18 +129,37 @@ export class StatisticSignal {
             });
         }
 
-        // 1) Cálculo de racha máxima (ascendente)
+        // **1) Agrupar logs completados por día y sumar las cantidades**
+        const daysMap = new Map<string, number>();
+        filteredLogs.forEach(log => {
+            if (log.estado !== 'completado') return; // Solo logs completados
+            const date = new Date(log.fecha);
+            const dayKey = this.formatDayKey(date); // 'YYYY-MM-DD'
+
+            // Sumar la cantidad realizada en ese día
+            const prevSum = daysMap.get(dayKey) ?? 0;
+            const cantidad = (typeof log.cantidadRealizada === 'number') ? log.cantidadRealizada : 1;
+            daysMap.set(dayKey, prevSum + cantidad);
+        });
+
+        // **2) Determinar qué días cumplen el objetivo**
+        const daysArray = Array.from(daysMap.entries()).map(([dayKey, total]) => ({
+            date: new Date(dayKey),
+            completed: total >= habit.objetivo
+        })).sort((a, b) => a.date.getTime() - b.date.getTime());
+
+        // **3) Calcular la racha máxima (ascendente)**
         let rachaMaxima = 0;
         let currentStreak = 0;
         let prevDate: Date | null = null;
 
-        filteredLogs.forEach(log => {
-            if (!this.isCompleted(log, habit)) {
+        daysArray.forEach(entry => {
+            if (!entry.completed) {
                 currentStreak = 0;
                 prevDate = null;
                 return;
             }
-            const currentDate = new Date(log.fecha);
+            const currentDate = entry.date;
             if (prevDate) {
                 const diffDays = this.diffInDays(prevDate, currentDate);
                 if (diffDays === 1) {
@@ -144,18 +176,22 @@ export class StatisticSignal {
             }
         });
 
-        // 2) Cálculo de la racha actual (descendente)
+        // **4) Calcular la racha actual (descendente)**
         let actualStreak = 0;
-        const descendingLogs = [...filteredLogs].sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
         const today = currentTime();
         let expectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-        for (const log of descendingLogs) {
-            if (!this.isCompleted(log, habit)) {
+        // **🔴 Aquí aseguramos que si hoy ya se cumplió, lo incluimos**
+        if (daysMap.has(this.formatDayKey(expectedDate)) && daysMap.get(this.formatDayKey(expectedDate))! >= habit.objetivo) {
+            actualStreak++;
+        }
+
+        const descendingDays = [...daysArray].sort((a, b) => b.date.getTime() - a.date.getTime());
+        for (const entry of descendingDays) {
+            if (!entry.completed) {
                 continue;
             }
-            const logDate = new Date(log.fecha);
-            const logDay = new Date(logDate.getFullYear(), logDate.getMonth(), logDate.getDate());
+            const logDay = new Date(entry.date.getFullYear(), entry.date.getMonth(), entry.date.getDate());
             if (this.isSameDate(logDay, expectedDate)) {
                 actualStreak++;
                 expectedDate.setDate(expectedDate.getDate() - 1);
@@ -166,6 +202,15 @@ export class StatisticSignal {
 
         return { rachaActual: actualStreak, rachaMaxima };
     }
+
+    // Formatear la fecha como 'YYYY-MM-DD'
+    private formatDayKey(date: Date): string {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
 
     /**
      * Cálculo de rachas para hábitos semanales o mensuales.
