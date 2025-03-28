@@ -1,92 +1,92 @@
-.sidebar {
+.app-sidebar {
     position: fixed;
     left: -250px;
     top: 0;
     width: 250px;
     height: 100%;
     background-color: var(--color-primario);
-    color: #fff;
+    color: var(--color-blanco);
     transition: left 0.3s ease;
     padding-top: 20px;
     box-shadow: var(--sombra-suave);
     overflow-y: auto;
     z-index: 21;
-
-}
-
-.sidebar.open {
+  }
+  
+  .app-sidebar.open {
     left: 0;
-}
-
-/* Header del Sidebar */
-.sidebar-header {
+  }
+  
+  /* Header del Sidebar */
+  .sidebar-header {
     padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid var(--overlay-border);
     text-align: center;
-}
-
-.sidebar-header h2 {
+  }
+  
+  .sidebar-header h2 {
     margin: 0 0 5px;
     font-size: 20px;
-}
-
-.sidebar-header p {
+  }
+  
+  .sidebar-header p {
     margin: 0;
     font-size: 14px;
     opacity: 0.8;
-}
-
-/* Botón de cierre */
-.close-btn {
+  }
+  
+  /* Botón de cierre */
+  .close-btn {
     position: absolute;
     top: 15px;
     right: 15px;
     background: none;
     border: none;
-    color: #fff;
+    color: var(--color-blanco);
     font-size: 24px;
     cursor: pointer;
     transition: transform 0.2s;
-}
-
-.close-btn:hover {
+  }
+  
+  .close-btn:hover {
     transform: scale(1.1);
-}
-
-/* Lista de navegación */
-.sidebar ul {
+  }
+  
+  /* Lista de navegación */
+  .app-sidebar ul {
     list-style: none;
     padding: 0;
     margin: 20px 0 0;
-}
-
-.sidebar li {
+  }
+  
+  .app-sidebar li {
     display: block;
-}
-
-/* Estilo para los links */
-.sidebar a {
+  }
+  
+  /* Estilo para los links */
+  .app-sidebar a {
     display: flex;
     align-items: center;
     padding: 12px 20px;
-    color: #fff;
+    color: var(--color-blanco);
     text-decoration: none;
     font-weight: 500;
     transition: background-color 0.2s;
-}
-
-.sidebar a i {
+  }
+  
+  .app-sidebar a i {
     margin-right: 12px;
     font-size: 18px;
-}
-
-.sidebar a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Separador entre items */
-.divider {
+  }
+  
+  .app-sidebar a:hover {
+    background-color: var(--overlay-hover);
+  }
+  
+  /* Separador entre items */
+  .divider {
     height: 1px;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--overlay-border);
     margin: 0 20px;
-}
+  }
+  
