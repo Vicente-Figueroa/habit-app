@@ -127,43 +127,65 @@ export class DailyHabitsComponent implements OnInit {
     estado: 'pendiente' | 'parcial' | 'completado';
   }[] {
     const today = currentTime();
-  
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - today.getDay() + 1); // lunes
     startOfWeek.setHours(0, 0, 0, 0);
-  
+
     const days = Array.from({ length: 7 }, (_, i) => {
       const date = new Date(startOfWeek);
       date.setDate(startOfWeek.getDate() + i);
       const dayName = date.toLocaleDateString('es-CL', { weekday: 'short' }).toLowerCase();
       return { date, day: dayName };
     });
-  
-    const logs = this.logs.filter(log =>
-      log.habitId === habit.id &&
-      new Date(log.fecha) >= startOfWeek &&
-      new Date(log.fecha) <= new Date(startOfWeek.getTime() + 6 * 86400000)
-    );
-  
-    const totalCantidad = logs.reduce((sum, log) => sum + (log.cantidadRealizada || 0), 0);
-    const objetivoCumplido = totalCantidad >= habit.objetivo;
-  
-    return days.map(({ date, day }) => {
-      const log = logs.find(l => this.isSameDay(l.fecha, date));
-      if (log) {
+
+    if (habit.frecuencia === 'diario') {
+      return days.map(({ date, day }) => {
+        const logs = this.logs.filter(l =>
+          l.habitId === habit.id && this.isSameDay(l.fecha, date)
+        );
+
+        const cantidad = logs.reduce((sum, log) => sum + (log.cantidadRealizada || 0), 0);
+        if (cantidad === 0) return { day, date, estado: 'pendiente' };
+
+        const cumplido = habit.tipo === 'bueno'
+          ? cantidad >= habit.objetivo
+          : cantidad === 0;
+
         return {
           day,
           date,
-          estado: objetivoCumplido ? 'completado' : 'parcial'
+          estado: cumplido ? 'completado' : 'parcial'
         };
-      } else {
+      });
+    }
+
+    if (habit.frecuencia === 'semanal') {
+      const logsSemana = this.logs.filter(log =>
+        log.habitId === habit.id &&
+        new Date(log.fecha) >= startOfWeek &&
+        new Date(log.fecha) <= new Date(startOfWeek.getTime() + 6 * 86400000)
+      );
+
+      const acumulado = logsSemana.reduce((sum, log) => sum + (log.cantidadRealizada || 0), 0);
+      const objetivoCumplido = acumulado >= habit.objetivo;
+
+      return days.map(({ date, day }) => {
+        const hayLog = logsSemana.some(log => this.isSameDay(log.fecha, date));
         return {
           day,
           date,
-          estado: 'pendiente'
+          estado: hayLog
+            ? (objetivoCumplido ? 'completado' : 'parcial')
+            : 'pendiente'
         };
-      }
-    });
+      });
+    }
+
+    // Para mensual/ocasional — neutro
+    return days.map(({ day, date }) => ({
+      day,
+      date,
+      estado: 'pendiente'
+    }));
   }
-  
 }
