@@ -69,3 +69,22 @@
 .quick-log-btn:hover {
     background-color: var(--color-secundario);
 }
+
+.week-status {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.day-circle {
+    width: 24px;
+    height: 24px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f1f1;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+}

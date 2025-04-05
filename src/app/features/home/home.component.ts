@@ -8,6 +8,7 @@ import { CategorySignal } from '../../core/signals/category.signal';
 import { Subscription } from 'rxjs';
 import { MotivationalTextService } from '../../core/services/motivational-text.service';
 import { currentTime } from '../../core/signals/time.signal';
+import { Log } from '../../core/models/log.model';
 
 @Component({
   selector: 'app-home',
@@ -60,30 +61,30 @@ export class HomeComponent {
   showConfirmation: boolean = false;
   confirmationMessage: string = '';
 
-  async onQuickLog(habit: Habit): Promise<void> {
+  async onQuickLog(habit: Habit & { logOverride?: Log }): Promise<void> {
     if (!habit.id) return;
-    
-    const now = currentTime(); // Usa la signal para la fecha actual
-    
-    const log = {
+  
+    const now = currentTime();
+    const log = habit.logOverride ?? {
       id: Date.now(),
       habitId: habit.id,
-      fecha: now.toISOString(), // 🔥 Fecha correctamente ajustada a la zona horaria de Chile
-      estado: 'completado' as const,
+      fecha: now.toISOString(),
+      estado: 'completado',
       cantidadRealizada: 1,
       comentario: undefined
     };
-    
+  
     await this.logSignal.addLog(log);
-
-    const todayStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+  
+    const todayStr = new Date(log.fecha).toISOString().split('T')[0];
     const total = this.logSignal.logs()
       .filter(l => l.habitId === habit.id && l.fecha.startsWith(todayStr))
       .reduce((sum, l) => sum + (l.cantidadRealizada || 0), 0);
-
-    this.confirmationMessage = `Se agregó +1 a "${habit.nombre}". Total hoy: ${total}.`;
+  
+    this.confirmationMessage = `Se agregó +1 a "${habit.nombre}". Total ese día: ${total}.`;
     this.showConfirmation = true;
   }
+  
 
   closeConfirmation(): void {
     this.showConfirmation = false;

@@ -56,7 +56,7 @@
 }
 
 .modal {
-  background-color: #fff;
+  background-color:var(--color-blanco);
   padding: 16px;
   border-radius: 8px;
   max-width: 400px;
@@ -74,7 +74,7 @@
 .modal button {
   padding: 8px 16px;
   background-color: var(--color-primario);
-  color: #fff;
+  color: var(--color-texto-secundario);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -99,7 +99,7 @@
   background: var(--degradado-header);
   padding: 1.5rem;
   text-align: center;
-  color: #fff;
+  color: var(--color-texto-secundario);
 }
 
 .instructions-header h1 {
