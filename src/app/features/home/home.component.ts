@@ -89,4 +89,35 @@ export class HomeComponent {
   closeConfirmation(): void {
     this.showConfirmation = false;
   }
+
+  getFailedHabitsYesterday(): Habit[] {
+    const yesterday = new Date(currentTime());
+    yesterday.setDate(yesterday.getDate() - 1);
+  
+    const dayName = yesterday.toLocaleDateString('es-CL', { weekday: 'long' }).toLowerCase();
+  
+    return this.habitSignal.habits().filter(habit => {
+      if (habit.tipo !== 'bueno' || habit.frecuencia !== 'diario') return false;
+  
+      const appliesToday = !habit.diasSemana || habit.diasSemana.includes(dayName);
+      if (!appliesToday) return false;
+  
+      const logs = this.logSignal.logs().filter(log =>
+        log.habitId === habit.id &&
+        this.isSameDay(log.fecha, yesterday)
+      );
+  
+      const total = logs.reduce((sum, log) => sum + (log.cantidadRealizada || 0), 0);
+  
+      return total < habit.objetivo;
+    });
+  }
+  
+  private isSameDay(dateStr: string, ref: Date): boolean {
+    const d = new Date(dateStr);
+    return d.getFullYear() === ref.getFullYear() &&
+      d.getMonth() === ref.getMonth() &&
+      d.getDate() === ref.getDate();
+  }
+
 }

@@ -66,4 +66,16 @@
       <button (click)="closeConfirmation()">Cerrar</button>
     </div>
   </div>
+  <div *ngIf="getFailedHabitsYesterday().length" class="habit-alert">
+    <details>
+      <summary>⚠️ Hábitos no cumplidos ayer ({{ getFailedHabitsYesterday().length }})</summary>
+      <ul>
+        <li *ngFor="let habit of getFailedHabitsYesterday()">
+          {{ habit.nombre }} – objetivo: {{ habit.objetivo }} {{ habit.unidadObjetivo }}
+        </li>
+      </ul>
+    </details>
+  </div>
+  
 </div>
+

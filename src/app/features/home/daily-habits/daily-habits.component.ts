@@ -203,4 +203,6 @@ export class DailyHabitsComponent implements OnInit {
       estado: 'pendiente'
     }));
   }
+
+  
 }
