@@ -143,19 +143,34 @@ export class DailyHabitsComponent implements OnInit {
         const logs = this.logs.filter(l =>
           l.habitId === habit.id && this.isSameDay(l.fecha, date)
         );
-
         const cantidad = logs.reduce((sum, log) => sum + (log.cantidadRealizada || 0), 0);
-        if (cantidad === 0) return { day, date, estado: 'pendiente' };
+        const diaPaso = date < today;
 
-        const cumplido = habit.tipo === 'bueno'
-          ? cantidad >= habit.objetivo
-          : cantidad === 0;
-
-        return {
-          day,
-          date,
-          estado: cumplido ? 'completado' : 'parcial'
-        };
+        if (habit.tipo === 'bueno') {
+          if (cantidad === 0 && diaPaso) return { day, date, estado: 'parcial' };
+          if (cantidad === 0) return { day, date, estado: 'pendiente' };
+          return {
+            day,
+            date,
+            estado: cantidad >= habit.objetivo ? 'completado' : 'parcial'
+          };
+        } else {
+          // hábito malo
+          if (cantidad > habit.objetivo) {
+            return { day, date, estado: 'parcial' }; // fallido
+          }
+          if (cantidad === 0 && diaPaso) {
+            return { day, date, estado: 'completado' }; // evitado con éxito
+          }
+          if (cantidad === 0 && !diaPaso) {
+            return { day, date, estado: 'pendiente' }; // aún puede fallarse
+          }
+          return {
+            day,
+            date,
+            estado: cantidad <= habit.objetivo ? 'completado' : 'parcial'
+          };
+        }
       });
     }
 
