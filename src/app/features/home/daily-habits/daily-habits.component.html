@@ -1,118 +1,32 @@
 <div class="daily-habits">
-    <h3>Hábitos de Hoy</h3>
+  <h3>Hábitos de Hoy</h3>
 
-    <div *ngFor="let category of ['diario', 'semanal', 'mensual', 'ocasional']">
-        <h4 *ngIf="groupedHabits[category]?.length">
-            <span *ngIf="category === 'diario'">📅</span>
-            <span *ngIf="category === 'semanal'">🗓️</span>
-            <span *ngIf="category === 'mensual'">📆</span>
-            <span *ngIf="category === 'ocasional'">🎯</span>
-            {{ category | titlecase }}
-        </h4>
+  <div *ngFor="let category of ['diario', 'semanal', 'mensual', 'ocasional']">
+    <h4 *ngIf="groupedHabits[category]?.length">
+      <span *ngIf="category === 'diario'">📅</span>
+      <span *ngIf="category === 'semanal'">🗓️</span>
+      <span *ngIf="category === 'mensual'">📆</span>
+      <span *ngIf="category === 'ocasional'">🎯</span>
+      {{ category | titlecase }}
+    </h4>
 
-        <div class="habits-grid" *ngIf="groupedHabits[category]?.length">
-            <ng-container *ngFor="let habit of groupedHabits[category]">
-                <div *ngIf="!(habit.tipo === 'bueno' && getProgress(habit) >= habit.objetivo)" class="habit-card">
-                    <div class="card-header">
-                        <h4 [ngStyle]="{ 'color': habit.tipo === 'bueno' ? '#4caf50' : '#f44336' }">
-                            <i class="fas"
-                                [ngClass]="{ 'fa-smile': habit.tipo === 'bueno', 'fa-frown': habit.tipo === 'malo' }"
-                                [ngStyle]="{ 'color': habit.tipo === 'bueno' ? '#4caf50' : '#f44336' }"></i>
-                            {{ habit.nombre }}
-                        </h4>
-                    </div>
-                    <div class="card-body">
-                        <p *ngIf="habit.descripcion" class="description">{{ habit.descripcion }}</p>
-                        <p class="meta">
-                            <i class="fas fa-bullseye"></i>
-                            <strong>Meta:</strong> {{ habit.objetivo }} {{ habit.unidadObjetivo }} - {{ habit.frecuencia
-                            }}
-                        </p>
-                        <ng-container [ngSwitch]="habit.tipo">
-                            <p *ngSwitchCase="'bueno'" class="progress">
-                                <i class="fas fa-chart-line" [style.color]="getProgressColor(habit)"></i>
-                                Progreso:
-                                <span [style.color]="getProgressColor(habit)">{{ getProgress(habit) }}</span>
-                                / {{ habit.objetivo }}
-                            </p>
-                            <p *ngSwitchCase="'malo'" class="incidences">
-                                <i class="fas fa-exclamation-triangle" [style.color]="getProgressColor(habit)"></i>
-                                Incidencias:
-                                <span [style.color]="getProgressColor(habit)">{{ getProgress(habit) }}</span>
-                            </p>
-                        </ng-container>
-                    </div>
-                    <div class="card-actions">
-                        <button (click)="registerQuickLog(habit)" class="quick-log-btn">
-                            <i class="fas fa-plus-circle"></i>
-                            Registro Rápido
-                        </button>
-
-                        <!-- Mini barra semanal -->
-                        <div class="week-status">
-                            <ng-container *ngFor="let status of getWeeklyStatus(habit)">
-                                <div class="day-circle" [title]="status.day"
-                                    (click)="registerRetroLog(habit, status.date)" style="cursor: pointer;">
-                                    {{
-                                    status.estado === 'completado' ? '✔️' :
-                                    status.estado === 'parcial' ? '➕' :
-                                    '⏳'
-                                    }}
-                                </div>
-                            </ng-container>
-                        </div>
-
-
-                    </div>
-                </div>
-            </ng-container>
-        </div>
+    <div class="habits-grid" *ngIf="groupedHabits[category]?.length">
+      <ng-container *ngFor="let habit of groupedHabits[category]">
+        <app-habit-card *ngIf="!(habit.tipo === 'bueno' && getProgressValue(habit) >= habit.objetivo)" [habit]="habit"
+          [logs]="logs" (quickLog)="handleQuickLog($event)" (retroLog)="handleRetroLog($event)">
+        </app-habit-card>
+      </ng-container>
     </div>
+  </div>
 
-    <!-- Completados -->
-    <div *ngIf="completedGoodHabits.length">
-        <h4>Hábitos Completados ✅</h4>
-        <div class="habits-grid">
-            <div *ngFor="let habit of completedGoodHabits" class="habit-card completed">
-                <div class="card-header">
-                    <h4 style="color: #4caf50;">
-                        <i class="fas fa-check-circle" style="color: #4caf50;"></i>
-                        {{ habit.nombre }}
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <p *ngIf="habit.descripcion" class="description">{{ habit.descripcion }}</p>
-                    <p class="meta">
-                        <i class="fas fa-bullseye"></i>
-                        <strong>Meta Alcanzada:</strong> {{ habit.objetivo }} {{ habit.unidadObjetivo }}
-                    </p>
-                    <p class="progress">
-                        <i class="fas fa-chart-line" style="color: #4caf50;"></i>
-                        Progreso:
-                        <span style="color: #4caf50;">{{ getProgress(habit) }}</span> / {{ habit.objetivo }}
-                    </p>
-                </div>
-                <div class="card-actions">
-                    <button (click)="registerQuickLog(habit)" class="quick-log-btn">
-                        <i class="fas fa-plus-circle"></i>
-                        Añadir Más Registro
-                    </button>
-
-                    <!-- Mini barra semanal -->
-                    <div class="week-status">
-                        <ng-container *ngFor="let status of getWeeklyStatus(habit)">
-                            <div class="day-circle" [title]="status.day" (click)="registerRetroLog(habit, status.date)"
-                                style="cursor: pointer;">
-                                {{
-                                status.estado === 'completado' ? '✔️' :
-                                status.estado === 'parcial' ? '➕' :
-                                '⏳'
-                                }}
-                            </div>
-                        </ng-container>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div *ngIf="completedGoodHabits.length">
+    <h4>Hábitos Completados ✅</h4>
+    <div class="habits-grid">
+      <ng-container *ngFor="let habit of completedGoodHabits">
+        <app-completed-habit-card [habit]="habit" [logs]="logs" (quickLog)="handleQuickLog($event)"
+          (retroLog)="handleRetroLog($event)">
+        </app-completed-habit-card>
+      </ng-container>
     </div>
+  </div>
 </div>

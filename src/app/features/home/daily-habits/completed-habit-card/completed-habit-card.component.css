@@ -1,0 +1,4 @@
+.habit-card.completed {
+    border-left: 6px solid #4caf50;
+    background-color: #f4fff6;
+}

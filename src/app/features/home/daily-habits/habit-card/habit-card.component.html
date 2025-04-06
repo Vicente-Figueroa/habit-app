@@ -1,0 +1,38 @@
+<div class="habit-card">
+    <div class="card-header">
+      <h4 [ngStyle]="{ color: habit.tipo === 'bueno' ? '#4caf50' : '#f44336' }">
+        <i class="fas"
+          [ngClass]="{ 'fa-smile': habit.tipo === 'bueno', 'fa-frown': habit.tipo === 'malo' }"></i>
+        {{ habit.nombre }}
+      </h4>
+    </div>
+    <div class="card-body">
+      <p *ngIf="habit.descripcion" class="description">{{ habit.descripcion }}</p>
+      <p class="meta">
+        <i class="fas fa-bullseye"></i>
+        <strong>Meta:</strong> {{ habit.objetivo }} {{ habit.unidadObjetivo }} - {{ habit.frecuencia }}
+      </p>
+      <ng-container [ngSwitch]="habit.tipo">
+        <p *ngSwitchCase="'bueno'" class="progress">
+          <i class="fas fa-chart-line" [style.color]="progressColor"></i>
+          Progreso: <span [style.color]="progressColor">{{ progress }}</span> / {{ habit.objetivo }}
+        </p>
+        <p *ngSwitchCase="'malo'" class="incidences">
+          <i class="fas fa-exclamation-triangle" [style.color]="progressColor"></i>
+          Incidencias: <span [style.color]="progressColor">{{ progress }}</span>
+        </p>
+      </ng-container>
+    </div>
+    <div class="card-actions">
+      <button (click)="quickLog.emit(habit)" class="quick-log-btn">
+        <i class="fas fa-plus-circle"></i> Registro Rápido
+      </button>
+  
+      <app-weekly-status-bar
+        [habit]="habit"
+        [logs]="logs"
+        (selectDate)="handleRetroLog($event)">
+      </app-weekly-status-bar>
+    </div>
+  </div>
+  

@@ -26,7 +26,7 @@ export class HomeComponent {
     public categorySignal: CategorySignal,
     public logSignal: LogSignal,
     private motivationalTextService: MotivationalTextService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.motivationalTextService.getMotivationalTextFromModel(
@@ -45,7 +45,7 @@ export class HomeComponent {
   }
 
   get todayDay(): string {
-    return currentTime().toLocaleDateString('es-CL', { weekday: 'long' }).toLowerCase();
+    return this.today().toLocaleDateString('es-CL', { weekday: 'long' }).toLowerCase();
   }
 
   get todaysHabits(): Habit[] {
@@ -63,61 +63,48 @@ export class HomeComponent {
 
   async onQuickLog(habit: Habit & { logOverride?: Log }): Promise<void> {
     if (!habit.id) return;
-  
-    const now = currentTime();
+
     const log = habit.logOverride ?? {
       id: Date.now(),
       habitId: habit.id,
-      fecha: now.toISOString(),
+      fecha: currentTime().toISOString(),
       estado: 'completado',
       cantidadRealizada: 1,
       comentario: undefined
     };
-  
+
     await this.logSignal.addLog(log);
-  
-    const todayStr = new Date(log.fecha).toISOString().split('T')[0];
+
+    const dateStr = new Date(log.fecha).toISOString().split('T')[0];
     const total = this.logSignal.logs()
-      .filter(l => l.habitId === habit.id && l.fecha.startsWith(todayStr))
+      .filter(l => l.habitId === habit.id && l.fecha.startsWith(dateStr))
       .reduce((sum, l) => sum + (l.cantidadRealizada || 0), 0);
-  
+
     this.confirmationMessage = `Se agregó +1 a "${habit.nombre}". Total ese día: ${total}.`;
     this.showConfirmation = true;
   }
-  
 
   closeConfirmation(): void {
     this.showConfirmation = false;
   }
 
   getFailedHabitsYesterday(): Habit[] {
-    const yesterday = new Date(currentTime());
+    const yesterday = new Date(this.today());
     yesterday.setDate(yesterday.getDate() - 1);
-  
+
     const dayName = yesterday.toLocaleDateString('es-CL', { weekday: 'long' }).toLowerCase();
-  
+    const logsAyer = this.logSignal.getLogsByDate(yesterday);
+
     return this.habitSignal.habits().filter(habit => {
       if (habit.tipo !== 'bueno' || habit.frecuencia !== 'diario') return false;
-  
-      const appliesToday = !habit.diasSemana || habit.diasSemana.includes(dayName);
-      if (!appliesToday) return false;
-  
-      const logs = this.logSignal.logs().filter(log =>
-        log.habitId === habit.id &&
-        this.isSameDay(log.fecha, yesterday)
-      );
-  
-      const total = logs.reduce((sum, log) => sum + (log.cantidadRealizada || 0), 0);
-  
-      return total < habit.objetivo;
+
+      const aplica = !habit.diasSemana || habit.diasSemana.includes(dayName);
+      if (!aplica) return false;
+
+      const logs = logsAyer.filter(log => log.habitId === habit.id);
+      const cantidad = logs.reduce((sum, log) => sum + (log.cantidadRealizada || 0), 0);
+
+      return cantidad < habit.objetivo;
     });
   }
-  
-  private isSameDay(dateStr: string, ref: Date): boolean {
-    const d = new Date(dateStr);
-    return d.getFullYear() === ref.getFullYear() &&
-      d.getMonth() === ref.getMonth() &&
-      d.getDate() === ref.getDate();
-  }
-
 }

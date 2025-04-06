@@ -3,54 +3,79 @@ import { DbService } from '../services/db.service';
 import { Log } from '../models/log.model';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class LogSignal {
-    private db = new DbService();
-    private _logs = signal<Log[]>([]);
+  private db: DbService;
+  private _logs = signal<Log[]>([]);
 
-    // Signal computed para exponer los logs de forma reactiva
-    public logs = computed(() => this._logs());
+  public logs = computed(() => this._logs());
 
-    constructor(db: DbService) {
-        this.db = db;
-        this.init();
+  constructor(db: DbService) {
+    this.db = db;
+    this.init();
+  }
+
+  private async init() {
+    await this.db.waitForDBReady();
+    const data = await this.db.listAll<Log>('registros');
+    this._logs.set(data);
+  }
+
+  private updateInMemory(log: Log) {
+    const current = this._logs();
+    const index = current.findIndex(l => l.id === log.id);
+    if (index !== -1) {
+      current[index] = log;
+      this._logs.set([...current]);
     }
+  }
 
-    async init() {
-        await this.db.waitForDBReady();
-        await this.loadLogs();
-    }
+  async addLog(log: Log) {
+    await this.db.add<Log>('registros', log);
+    this._logs.set([...this._logs(), log]);
+  }
 
-    async loadLogs() {
-        const data = await this.db.listAll<Log>('registros');
-        this._logs.set(data);
-    }
+  async updateLog(log: Log) {
+    if (!log.id) return;
+    await this.db.update<Log>('registros', log);
+    this.updateInMemory(log);
+  }
 
-    async addLog(log: Log) {
-        await this.db.add<Log>('registros', log);
-        await this.loadLogs(); // Actualiza la lista en memoria
-    }
+  async deleteLog(id: number) {
+    await this.db.delete('registros', id);
+    this._logs.set(this._logs().filter(l => l.id !== id));
+  }
 
-    async updateLog(log: Log) {
-        if (!log.id) return;
-        await this.db.update<Log>('registros', log);
-        this._logs.set(this._logs().map(l => (l.id === log.id ? log : l)));
-    }
+  getLogsByHabit(habitId: number): Log[] {
+    return this._logs().filter(log => log.habitId === habitId);
+  }
 
-    async deleteLog(id: number) {
-        await this.db.delete('registros', id);
-        this._logs.set(this._logs().filter(l => l.id !== id));
-    }
+  getLogsByDate(date: Date): Log[] {
+    return this._logs().filter(log => this.isSameDay(log.fecha, date));
+  }
 
-    async getLogsByHabit(habitId: number): Promise<Log[]> {
-        await this.loadLogs();
-        return this._logs().filter(log => log.habitId === habitId);
-    }
+  getLogsInRange(start: Date, end: Date): Log[] {
+    return this._logs().filter(log => {
+      const d = new Date(log.fecha);
+      return d >= start && d <= end;
+    });
+  }
 
-    async getPaginatedLogs(page: number = 1, limit: number = 10): Promise<Log[]> {
-        await this.loadLogs();
-        const start = (page - 1) * limit;
-        return this._logs().slice(start, start + limit);
-    }
+  getPaginatedLogs(page: number = 1, limit: number = 10): Log[] {
+    const allLogs = this._logs();
+    const start = (page - 1) * limit;
+    return allLogs.slice(start, start + limit);
+  }
+
+  private isSameDay(dateStr: string, ref: Date): boolean {
+    const d = new Date(dateStr);
+    return d.getFullYear() === ref.getFullYear() &&
+      d.getMonth() === ref.getMonth() &&
+      d.getDate() === ref.getDate();
+  }
+  async loadLogs() {
+    const data = await this.db.listAll<Log>('registros');
+    this._logs.set(data);
+}
 }

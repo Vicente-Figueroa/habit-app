@@ -1,0 +1,23 @@
+.week-status {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.day-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+    background-color: #f3f3f3;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.day-circle:hover {
+    background-color: #e0e0e0;
+    cursor: pointer;
+}
