@@ -1,4 +1,90 @@
-.habit-card.completed {
-    border-left: 6px solid #4caf50;
-    background-color: #f4fff6;
+.daily-habits {
+    margin: 16px 0;
+}
+
+.daily-habits h3 {
+    text-align: center;
+    color: var(--color-texto);
+    margin-bottom: 16px;
+}
+
+.habits-grid {
+    display: grid;
+    grid-gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.habit-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: var(--sombra-suave);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s;
+}
+
+.habit-card:hover {
+    transform: translateY(-2px);
+}
+
+.card-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--color-texto);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-body p {
+    margin: 4px 0;
+    font-size: 0.9rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-actions {
+    margin-top: 12px;
+    text-align: right;
+}
+
+.quick-log-btn {
+    padding: 8px 16px;
+    background-color: var(--color-primario);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.3s;
+}
+
+.quick-log-btn:hover {
+    background-color: var(--color-secundario);
+}
+
+.week-status {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.day-circle {
+    width: 24px;
+    height: 24px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f1f1;
+    border-radius: 50%;
+    border: 1px solid #ccc;
 }

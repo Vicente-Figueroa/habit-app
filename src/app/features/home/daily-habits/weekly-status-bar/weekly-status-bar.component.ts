@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Habit } from '../../../../core/models/habit.model';
 import { Log } from '../../../../core/models/log.model';
 import { getWeeklyStatus } from '../daily-habits.utils';
+import { currentTime } from '../../../../core/signals/time.signal';
 
 @Component({
   selector: 'app-weekly-status-bar',
@@ -35,6 +36,6 @@ export class WeeklyStatusBarComponent {
   @Output() selectDate = new EventEmitter<Date>();
 
   get statusList() {
-    return getWeeklyStatus(this.habit, this.logs);
+    return getWeeklyStatus(this.habit, this.logs, currentTime());
   }
 }

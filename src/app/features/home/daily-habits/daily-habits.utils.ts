@@ -20,7 +20,10 @@ export function getProgress(habit: Habit, logs: Log[], today = new Date()): numb
         );
     } else if (habit.frecuencia === 'semanal') {
         const startOfWeek = new Date(today);
-        startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+        const day = today.getDay(); // 0 = domingo
+        startOfWeek.setDate(today.getDate() - (day === 0 ? 6 : day - 1));
+        startOfWeek.setHours(0, 0, 0, 0);
+
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
 
@@ -63,7 +66,8 @@ export function getWeeklyStatus(habit: Habit, logs: Log[], today = new Date()): 
     estado: 'pendiente' | 'parcial' | 'completado';
 }[] {
     const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+    const day = today.getDay(); // 0 = domingo
+    startOfWeek.setDate(today.getDate() - (day === 0 ? 6 : day - 1));
     startOfWeek.setHours(0, 0, 0, 0);
 
     const days = Array.from({ length: 7 }, (_, i) => {
@@ -90,15 +94,9 @@ export function getWeeklyStatus(habit: Habit, logs: Log[], today = new Date()): 
                     estado: cantidad >= habit.objetivo ? 'completado' : 'parcial'
                 };
             } else {
-                if (cantidad > habit.objetivo) {
-                    return { day, date, estado: 'parcial' };
-                }
-                if (cantidad === 0 && diaPaso) {
-                    return { day, date, estado: 'completado' };
-                }
-                if (cantidad === 0 && !diaPaso) {
-                    return { day, date, estado: 'pendiente' };
-                }
+                if (cantidad > habit.objetivo) return { day, date, estado: 'parcial' };
+                if (cantidad === 0 && diaPaso) return { day, date, estado: 'completado' };
+                if (cantidad === 0 && !diaPaso) return { day, date, estado: 'pendiente' };
                 return {
                     day,
                     date,
@@ -109,10 +107,13 @@ export function getWeeklyStatus(habit: Habit, logs: Log[], today = new Date()): 
     }
 
     if (habit.frecuencia === 'semanal') {
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+
         const logsSemana = logs.filter(log =>
             log.habitId === habit.id &&
             new Date(log.fecha) >= startOfWeek &&
-            new Date(log.fecha) <= new Date(startOfWeek.getTime() + 6 * 86400000)
+            new Date(log.fecha) <= endOfWeek
         );
 
         const acumulado = logsSemana.reduce((sum, log) => sum + (log.cantidadRealizada || 0), 0);
