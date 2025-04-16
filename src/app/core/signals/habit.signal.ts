@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { DbService } from '../services/db.service';
 import { Habit } from '../models/habit.model';
+import { Log } from '../models/log.model';
 
 @Injectable({
     providedIn: 'root'
@@ -39,7 +40,21 @@ export class HabitSignal {
     }
 
     async deleteHabit(id: number) {
-        await this.db.delete('habitos', id);
-        this.habits.set(this.habits().filter(h => h.id !== id));
-    }
+         // Obtener todos los logs asociados al hábito que se va a eliminar
+         const logs = await this.db.listAll<Log>('registros');
+         const habitLogs = logs.filter(log => log.habitId === id);
+ 
+         // Eliminar cada log asociado al hábito
+         for (const log of habitLogs) {
+             if (log.id) {
+                 await this.db.delete('registros', Number(log.id));
+             }
+         }
+ 
+         // Eliminar el hábito de la base de datos
+         await this.db.delete('habitos', id);
+ 
+         // Actualizar la lista de hábitos en memoria
+         this.habits.set(this.habits().filter(h => h.id !== id));
+     }
 }
