@@ -1,3 +1,4 @@
+// src/app/core/signals/log.signal.ts
 import { Injectable, signal, computed } from '@angular/core';
 import { DbService } from '../services/db.service';
 import { Log } from '../models/log.model';
