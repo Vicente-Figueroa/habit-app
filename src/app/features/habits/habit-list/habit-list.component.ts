@@ -5,10 +5,26 @@ import { Habit } from '../../../core/models/habit.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { currentTime } from '../../../core/signals/time.signal';
+import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-habit-list',
-  imports: [CommonModule, FormsModule],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    DropdownModule,
+    DialogModule,
+    CardModule,
+    ButtonModule,
+    TagModule,
+    InputTextModule
+  ],
   templateUrl: './habit-list.component.html',
   styleUrl: './habit-list.component.css'
 })
@@ -16,32 +32,32 @@ export class HabitListComponent {
   constructor(
     public habitSignal: HabitSignal,
     public categorySignal: CategorySignal
-  ) { }
-
-  editDaysOfWeek = [
-    { name: 'Lunes', value: 'lunes', selected: false },
-    { name: 'Martes', value: 'martes', selected: false },
-    { name: 'Miércoles', value: 'miércoles', selected: false },
-    { name: 'Jueves', value: 'jueves', selected: false },
-    { name: 'Viernes', value: 'viernes', selected: false },
-    { name: 'Sábado', value: 'sábado', selected: false },
-    { name: 'Domingo', value: 'domingo', selected: false }
-  ];
+  ) {}
 
   editingHabit: Habit | null = null;
-  editHabitName: string = '';
-  editHabitDescription: string = '';
+  editHabitName = '';
+  editHabitDescription = '';
   editHabitType: 'bueno' | 'malo' = 'bueno';
   editHabitFrequency: 'diario' | 'semanal' | 'mensual' | 'ocasional' = 'diario';
-  editHabitObjective: number = 1;
-  editHabitUnit: string = 'veces';
+  editHabitObjective = 1;
+  editHabitUnit = 'veces';
   editSelectedCategory: number | null = null;
-  editHabitDiasSemana: string = '';
-  editHabitInicio: string = '';
-  editHabitFin: string = '';
+  editHabitInicio = '';
+  editHabitFin = '';
 
-  showDeleteConfirm: boolean = false;
+  showDeleteConfirm = false;
   habitToDelete: Habit | null = null;
+
+  get isEditing(): boolean {
+    return this.editingHabit !== null;
+  }
+
+  get categoryOptions() {
+    return this.categorySignal.categories().map(c => ({
+      label: c.nombre,
+      value: c.id
+    }));
+  }
 
   openEditModal(habit: Habit) {
     this.editingHabit = { ...habit };
@@ -51,10 +67,9 @@ export class HabitListComponent {
     this.editHabitFrequency = habit.frecuencia;
     this.editHabitObjective = habit.objetivo;
     this.editHabitUnit = habit.unidadObjetivo;
-    this.editSelectedCategory = habit.categoriaId || null;
-    this.editHabitDiasSemana = habit.diasSemana ? habit.diasSemana.join(', ') : '';
-    this.editHabitInicio = habit.horarioInicio || '';
-    this.editHabitFin = habit.horarioFin || '';
+    this.editSelectedCategory = habit.categoriaId ?? null;
+    this.editHabitInicio = habit.horarioInicio ?? '';
+    this.editHabitFin = habit.horarioFin ?? '';
   }
 
   closeEditModal() {
@@ -64,10 +79,6 @@ export class HabitListComponent {
   async saveEdit() {
     if (!this.editingHabit) return;
 
-    const dias = this.editHabitDiasSemana
-      ? this.editHabitDiasSemana.split(',').map(d => d.trim())
-      : undefined;
-
     const updatedHabit: Habit = {
       ...this.editingHabit,
       nombre: this.editHabitName.trim(),
@@ -76,11 +87,10 @@ export class HabitListComponent {
       frecuencia: this.editHabitFrequency,
       objetivo: this.editHabitObjective,
       unidadObjetivo: this.editHabitUnit.trim(),
-      categoriaId: this.editSelectedCategory || undefined,
-      diasSemana: dias,
+      categoriaId: this.editSelectedCategory ?? undefined,
       horarioInicio: this.editHabitInicio || undefined,
       horarioFin: this.editHabitFin || undefined,
-      fechaActualizacion: currentTime().toISOString() // 🔥 Usamos la signal para normalizar la fecha
+      fechaActualizacion: currentTime().toISOString()
     };
 
     await this.habitSignal.updateHabit(updatedHabit);
@@ -93,7 +103,7 @@ export class HabitListComponent {
   }
 
   async deleteHabit() {
-    if (!this.habitToDelete || !this.habitToDelete.id) return;
+    if (!this.habitToDelete?.id) return;
     await this.habitSignal.deleteHabit(this.habitToDelete.id);
     this.cancelDelete();
   }
@@ -104,7 +114,6 @@ export class HabitListComponent {
   }
 
   getCategoryName(categoryId?: number): string {
-    const category = this.categorySignal.categories().find(c => c.id === Number(categoryId));
-    return category ? category.nombre : 'Sin categoría';
+    return this.categorySignal.categories().find(c => c.id === categoryId)?.nombre || 'Sin categoría';
   }
 }

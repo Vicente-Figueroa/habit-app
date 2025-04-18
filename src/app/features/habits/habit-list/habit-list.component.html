@@ -1,130 +1,108 @@
-<div class="habit-list">
-    <ul>
-        <li *ngFor="let habit of habitSignal.computedHabits()">
-            <div class="card" [ngClass]="{'habit-bueno': habit.tipo==='bueno', 'habit-malo': habit.tipo==='malo'}">
-                <div class="card-header">
-                    <h4>
-                        <i class="fas" [ngClass]="habit.tipo==='bueno' ? 'fa-smile' : 'fa-frown'"></i>
-                        {{ habit.nombre }}
-                    </h4>
-                </div>
-                <div class="card-info">
-                    <p>
-                        <i class="fas fa-info-circle"></i>
-                        {{ habit.descripcion }}
-                    </p>
-                    <p>
-                        <i class="fas fa-sync-alt"></i>
-                        Frecuencia: {{ habit.frecuencia }}
-                    </p>
-                    <p>
-                        <i class="fas fa-bullseye"></i>
-                        Objetivo: {{ habit.objetivo }} {{ habit.unidadObjetivo }}
-                    </p>
-                    <p>
-                        <i class="fas fa-tag"></i>
-                        Categoría: {{ getCategoryName(habit.categoriaId) }}
-                    </p>
-                    <p *ngIf="habit.diasSemana">
-                        <i class="fas fa-calendar-alt"></i>
-                        Días: {{ habit.diasSemana.join(', ') }}
-                    </p>
-                    <p *ngIf="habit.horarioInicio || habit.horarioFin">
-                        <i class="fas fa-clock"></i>
-                        Horario: {{ habit.horarioInicio }} - {{ habit.horarioFin }}
-                    </p>
-                </div>
-                <div class="card-actions">
-                    <button class="edit-btn" (click)="openEditModal(habit)">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="delete-btn" (click)="confirmDelete(habit)">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        </li>
-    </ul>
+<!-- Habit List usando PrimeNG -->
+<div class="habit-list p-grid p-gap-4 p-mt-2">
+  <div *ngFor="let habit of habitSignal.computedHabits()" class="p-col-12">
+    <p-card class="p-shadow-2">
+      <ng-template pTemplate="header">
+        <div class="p-d-flex p-ai-center p-jc-between">
+          <span class="text-lg font-semibold">
+            <i class="pi" [ngClass]="habit.tipo === 'bueno' ? 'pi-smile' : 'pi-frown'" style="margin-right: .5rem;"></i>
+            {{ habit.nombre }}
+          </span>
+          <p-tag [value]="habit.tipo === 'bueno' ? 'Bueno' : 'Malo'"
+            [severity]="habit.tipo === 'bueno' ? 'success' : 'danger'"></p-tag>
+        </div>
+      </ng-template>
+
+      <div class="p-text-secondary p-mt-2">
+        <p *ngIf="habit.descripcion"><i class="pi pi-info-circle"></i> {{ habit.descripcion }}</p>
+        <p><i class="pi pi-sync"></i> Frecuencia: {{ habit.frecuencia }}</p>
+        <p><i class="pi pi-bullseye"></i> Objetivo: {{ habit.objetivo }} {{ habit.unidadObjetivo }}</p>
+        <p><i class="pi pi-tags"></i> Categoría: {{ getCategoryName(habit.categoriaId) }}</p>
+        <p *ngIf="habit.diasSemana"><i class="pi pi-calendar"></i> Días: {{ habit.diasSemana.join(', ') }}</p>
+        <p *ngIf="habit.horarioInicio || habit.horarioFin"><i class="pi pi-clock"></i> Horario: {{ habit.horarioInicio
+          }} - {{ habit.horarioFin }}</p>
+      </div>
+
+      <ng-template pTemplate="footer">
+        <div class="p-d-flex p-jc-end p-gap-2">
+          <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text"
+            (click)="openEditModal(habit)"></button>
+          <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger"
+            (click)="confirmDelete(habit)"></button>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
 </div>
 
 <!-- Modal de edición -->
-<div class="modal-overlay" *ngIf="editingHabit">
-    <div class="modal">
-      <h3>Editar Hábito</h3>
-      <!-- Campos de edición -->
-      <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" [(ngModel)]="editHabitName">
-      </div>
-      <div class="form-group">
-        <label>Descripción</label>
-        <input type="text" [(ngModel)]="editHabitDescription">
-      </div>
-      <div class="form-group">
-        <label>Tipo</label>
-        <select [(ngModel)]="editHabitType">
-          <option value="bueno">Bueno</option>
-          <option value="malo">Malo</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Frecuencia</label>
-        <select [(ngModel)]="editHabitFrequency">
-          <option value="diario">Diario</option>
-          <option value="semanal">Semanal</option>
-          <option value="mensual">Mensual</option>
-          <option value="ocasional">Ocasional</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Objetivo</label>
-        <input type="number" [(ngModel)]="editHabitObjective" min="1">
-      </div>
-      <div class="form-group">
-        <label>Unidad</label>
-        <input type="text" [(ngModel)]="editHabitUnit">
-      </div>
-      <div class="form-group">
-        <label>Categoría</label>
-        <select [(ngModel)]="editSelectedCategory">
-          <option [ngValue]="null">Sin categoría</option>
-          <option *ngFor="let cat of categorySignal.categories()" [value]="cat.id">{{ cat.nombre }}</option>
-        </select>
-      </div>
-      <!-- Grupo de checkboxes para los días de la semana -->
-      <div class="form-group days-group">
-        <label>Días de la Semana</label>
-        <div class="days-options">
-          <div *ngFor="let day of editDaysOfWeek" class="day-option">
-            <input type="checkbox" [(ngModel)]="day.selected" [name]="day.value" [id]="day.value">
-            <label [for]="day.value">{{ day.name }}</label>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Horario Inicio</label>
-        <input type="time" [(ngModel)]="editHabitInicio">
-      </div>
-      <div class="form-group">
-        <label>Horario Fin</label>
-        <input type="time" [(ngModel)]="editHabitFin">
-      </div>
-      <div class="modal-actions">
-        <button (click)="saveEdit()">Guardar</button>
-        <button (click)="closeEditModal()">Cancelar</button>
-      </div>
+<p-dialog [(visible)]="isEditing" header="Editar Hábito" [modal]="true" [closable]="false" [style]="{ width: '500px' }">
+  <form class="p-fluid">
+    <div class="p-field">
+      <label>Nombre</label>
+      <input pInputText [(ngModel)]="editHabitName" name="habitName" />
     </div>
-  </div>
-  
+
+    <div class="p-field">
+      <label>Descripción</label>
+      <textarea pInputTextarea [(ngModel)]="editHabitDescription" rows="3" name="habitDesc"></textarea>
+    </div>
+
+    <div class="p-field">
+      <label>Tipo</label>
+      <p-dropdown [options]="[{ label: 'Bueno', value: 'bueno' }, { label: 'Malo', value: 'malo' }]"
+        [(ngModel)]="editHabitType" name="habitType"></p-dropdown>
+    </div>
+
+    <div class="p-field">
+      <label>Frecuencia</label>
+      <p-dropdown [options]="[
+        { label: 'Diario', value: 'diario' },
+        { label: 'Semanal', value: 'semanal' },
+        { label: 'Mensual', value: 'mensual' },
+        { label: 'Ocasional', value: 'ocasional' }
+      ]" [(ngModel)]="editHabitFrequency" name="habitFreq"></p-dropdown>
+    </div>
+
+    <div class="p-field">
+      <label>Objetivo</label>
+      <input pInputText type="number" [(ngModel)]="editHabitObjective" name="habitGoal" />
+    </div>
+
+    <div class="p-field">
+      <label>Unidad</label>
+      <input pInputText [(ngModel)]="editHabitUnit" name="habitUnit" />
+    </div>
+
+    <div class="p-field">
+      <label>Categoría</label>
+      <p-dropdown [options]="categoryOptions" [(ngModel)]="editSelectedCategory" name="habitCategory" [showClear]="true"
+        placeholder="Sin categoría"></p-dropdown>
+    </div>
+
+    <div class="p-field">
+      <label>Horario Inicio</label>
+      <input type="time" pInputText [(ngModel)]="editHabitInicio" name="habitStart" />
+    </div>
+
+    <div class="p-field">
+      <label>Horario Fin</label>
+      <input type="time" pInputText [(ngModel)]="editHabitFin" name="habitEnd" />
+    </div>
+
+    <div class="p-d-flex p-jc-end p-gap-2">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="closeEditModal()"></button>
+      <button pButton type="button" label="Guardar" (click)="saveEdit()"></button>
+    </div>
+  </form>
+</p-dialog>
 
 <!-- Modal de confirmación para borrar -->
-<div class="modal-overlay" *ngIf="showDeleteConfirm">
-    <div class="modal">
-        <h3>Confirmar Borrado</h3>
-        <p>¿Estás seguro de que deseas borrar el hábito <strong>{{ habitToDelete?.nombre }}</strong>?</p>
-        <div class="modal-actions">
-            <button (click)="deleteHabit()">Sí, borrar</button>
-            <button (click)="cancelDelete()">Cancelar</button>
-        </div>
-    </div>
-</div>
+<p-dialog [(visible)]="showDeleteConfirm" header="Confirmar Borrado" [modal]="true" [closable]="false"
+  [style]="{ width: '400px' }">
+  <p>¿Estás seguro de que deseas borrar el hábito <strong>{{ habitToDelete?.nombre }}</strong>?</p>
+  <div class="p-d-flex p-jc-end p-gap-2 p-mt-3">
+    <button pButton label="Cancelar" class="p-button-text" (click)="cancelDelete()"></button>
+    <button pButton label="Sí, borrar" class="p-button-danger" (click)="deleteHabit()"></button>
+  </div>
+</p-dialog>

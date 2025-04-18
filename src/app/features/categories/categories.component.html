@@ -1,9 +1,12 @@
-<div class="category-container">
-  <h3>📂 Categorías</h3>
-  <p>"Cada categoria es un área de tu vida"</p>
-  <!-- Formulario para agregar categoría -->
+<div class="category-container p-px-4 p-pt-6 p-pb-5">
+  <div class="category-header p-mb-3">
+    <h2 class="p-mb-1">📂 Categorías</h2>
+    <p class="p-text-secondary">"Cada categoría representa un área de tu vida"</p>
+  </div>
+
+  <!-- 🔧 Formulario de nueva categoría -->
   <app-category-form (addCategory)="addCategory($event)"></app-category-form>
 
-  <!-- Listado de categorías -->
+  <!-- 📋 Listado -->
   <app-categories-list></app-categories-list>
 </div>

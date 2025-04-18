@@ -1,22 +1,46 @@
+/* 🎯 Contenedor principal */
 .habits-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 16px;
+    max-width: 900px;
+    margin: 3rem auto 2rem;
+    padding: 1.5rem;
     text-align: center;
 }
 
+/* 🧭 Título principal */
 .habits-container h2 {
+    font-size: 2rem;
     color: var(--color-texto);
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
 }
 
+/* ✏️ Descripción sutil */
 .habits-container p {
     font-style: italic;
-    color: rgb(42, 42, 42);
-    margin-top: -10px;
-    margin-bottom: 24px;
+    font-size: 1rem;
+    color: #4b4b4b;
+    margin-top: 0;
+    margin-bottom: 2rem;
 }
-p{
-    font-style: italic;
-    color: rgb(42, 42, 42);
+
+/* 🧼 Asegura consistencia con PrimeNG */
+.habits-container app-habit-input,
+.habits-container app-habit-list {
+    display: block;
+    margin-bottom: 2rem;
+}
+
+/* 🧩 Responsive support */
+@media (max-width: 768px) {
+    .habits-container {
+        padding: 1rem;
+        margin-top: 2rem;
+    }
+
+    .habits-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .habits-container p {
+        font-size: 0.95rem;
+    }
 }

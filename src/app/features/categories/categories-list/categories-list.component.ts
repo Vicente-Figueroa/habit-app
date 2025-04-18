@@ -1,29 +1,48 @@
 import { Component } from '@angular/core';
 import { CategorySignal } from '../../../core/signals/category.signal';
 import { Category } from '../../../core/models/category.model';
+
+// Angular core
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+// PrimeNG modules
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { SliderModule } from 'primeng/slider';
+import { TagModule } from 'primeng/tag';
+
 @Component({
   selector: 'app-categories-list',
-  imports: [CommonModule, FormsModule],
+  standalone: true,
   templateUrl: './categories-list.component.html',
-  styleUrl: './categories-list.component.css'
+  styleUrl: './categories-list.component.css',
+  imports: [
+    CommonModule,
+    FormsModule,
+    CardModule,
+    ButtonModule,
+    DialogModule,
+    InputTextModule,
+    SliderModule,
+    TagModule
+  ]
 })
 export class CategoriesListComponent {
-  constructor(public categorySignal: CategorySignal) {}
+  constructor(public categorySignal: CategorySignal) { }
 
-  // Variables para el modal de edición
+  // Modal de edición
   editingCategory: Category | null = null;
   editName: string = '';
   editDescription: string = '';
   editSatisfaction: number = 5;
 
-  // Variables para el modal de borrado
+  // Modal de confirmación
   showDeleteConfirm: boolean = false;
   categoryToDelete: Category | null = null;
 
-  // Abrir el modal de edición, haciendo una copia de la categoría seleccionada
   openEditModal(category: Category) {
     this.editingCategory = { ...category };
     this.editName = category.nombre;
@@ -31,14 +50,13 @@ export class CategoriesListComponent {
     this.editSatisfaction = category.satisfaccion || 0;
   }
 
-  // Cerrar el modal de edición
   closeEditModal() {
     this.editingCategory = null;
   }
 
-  // Guardar la edición y actualizar la categoría
   async saveEdit() {
     if (!this.editingCategory) return;
+
     const updatedCategory: Category = {
       ...this.editingCategory,
       nombre: this.editName.trim(),
@@ -50,21 +68,18 @@ export class CategoriesListComponent {
     this.closeEditModal();
   }
 
-  // Mostrar el modal de confirmación de borrado
   confirmDelete(category: Category) {
     this.categoryToDelete = category;
     this.showDeleteConfirm = true;
   }
 
-  // Ejecutar el borrado
   async deleteCategory() {
-    if (!this.categoryToDelete) return;
-    if (!this.categoryToDelete.id) return;
+    if (!this.categoryToDelete?.id) return;
+
     await this.categorySignal.deleteCategory(this.categoryToDelete.id);
     this.cancelDelete();
   }
 
-  // Cancelar la acción de borrado
   cancelDelete() {
     this.showDeleteConfirm = false;
     this.categoryToDelete = null;

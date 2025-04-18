@@ -1,60 +1,80 @@
-<div class="category-list">
-    <ul>
-        <li *ngFor="let category of categorySignal.categories()">
-            <div class="card">
-                <div class="card-info">
-                    <h4>{{ category.nombre }}</h4>
-                    <p>{{ category.descripcion }}</p>
-                    <span *ngIf = "category.satisfaccion" class="satisfaction" [ngClass]="{
-                      'low': category.satisfaccion < 4,
-                      'medium': category.satisfaccion >= 4 && category.satisfaccion < 8,
-                      'high': category.satisfaccion >= 8
-                    }">🌟 {{ category.satisfaccion }}/10</span>
+<div class="category-list p-grid p-gap-4 p-mt-2">
+    <div *ngFor="let category of categorySignal.categories()" class="p-col-12 p-mb-3">
+        <p-card class="p-shadow-2">
+            <ng-template pTemplate="header">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    <span class="text-xl font-semibold">{{ category.nombre }}</span>
+                    <p-tag *ngIf="category.satisfaccion" [value]="category.satisfaccion + '/10'" [severity]="
+                category.satisfaccion < 4  ? 'danger' :
+                category.satisfaccion < 8  ? 'warn'    :
+                'success'
+              ">
+                    </p-tag>
                 </div>
-                <div class="card-actions">
-                    <button class="edit-btn" (click)="openEditModal(category)">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="delete-btn" (click)="confirmDelete(category)">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
+            </ng-template>
+
+            <!-- descripción con margen inferior -->
+            <div class="p-text-secondary p-mb-2">
+                {{ category.descripcion }}
             </div>
-        </li>
-    </ul>
-</div>
 
-<!-- Modal de edición -->
-<div class="modal-overlay" *ngIf="editingCategory">
-    <div class="modal">
-        <h3>Editar Categoría</h3>
-        <div class="form-group">
-            <label>Nombre</label>
-            <input type="text" [(ngModel)]="editName" />
-        </div>
-        <div class="form-group">
-            <label>Descripción</label>
-            <input type="text" [(ngModel)]="editDescription" />
-        </div>
-        <div class="form-group satisfaction-group">
-            <label>Satisfacción: {{ editSatisfaction }}</label>
-            <input type="range" min="1" max="10" [(ngModel)]="editSatisfaction" />
-        </div>
-        <div class="modal-actions">
-            <button (click)="saveEdit()">Guardar</button>
-            <button (click)="closeEditModal()">Cancelar</button>
-        </div>
+            <ng-template pTemplate="footer">
+                <div class="p-d-flex p-jc-end p-gap-2">
+                    <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text"
+                        (click)="openEditModal(category)">
+                    </button>
+                    <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger"
+                        (click)="confirmDelete(category)">
+                    </button>
+                </div>
+            </ng-template>
+        </p-card>
     </div>
 </div>
 
-<!-- Modal de confirmación para borrar -->
-<div class="modal-overlay" *ngIf="showDeleteConfirm">
-    <div class="modal">
-        <h3>Confirmar Borrado</h3>
-        <p>¿Estás seguro de que deseas borrar la categoría <strong>{{ categoryToDelete?.nombre }}</strong>?</p>
-        <div class="modal-actions">
-            <button (click)="deleteCategory()">Sí, borrar</button>
-            <button (click)="cancelDelete()">Cancelar</button>
+<!-- 📝 Modal de edición -->
+<p-dialog [visible]="editingCategory !== null" (onHide)="closeEditModal()" header="Editar Categoría" [modal]="true"
+    [closable]="false" [style]="{ width: '400px' }">
+    <form class="p-fluid">
+        <!-- Nombre -->
+        <div class="p-field p-mb-3">
+            <label for="name">Nombre</label>
+            <input id="name" name="editName" pInputText [(ngModel)]="editName"
+                placeholder="Ingresa el nombre de la categoría" />
         </div>
+
+        <!-- Descripción -->
+        <div class="p-field p-mb-3">
+            <label for="desc">Descripción</label>
+            <textarea id="desc" name="editDescription" pInputTextarea [(ngModel)]="editDescription" rows="4"
+                placeholder="Describe brevemente esta categoría"></textarea>
+            <small class="helper-text">Máx. 200 caracteres</small>
+        </div>
+
+        <!-- Satisfacción -->
+        <div class="p-field p-mb-4">
+            <label for="satisfaccion">Satisfacción: {{ editSatisfaction }}</label>
+            <p-slider id="satisfaccion" name="editSatisfaction" [(ngModel)]="editSatisfaction" [min]="1" [max]="10"
+                [step]="1" styleClass="p-mt-1"></p-slider>
+        </div>
+
+        <!-- Acciones -->
+        <div class="p-d-flex p-jc-end p-gap-2">
+            <button pButton type="button" label="Cancelar" class="p-button-text" (click)="closeEditModal()"></button>
+            <button pButton type="button" label="Guardar" class="p-button-primary" (click)="saveEdit()"></button>
+        </div>
+    </form>
+</p-dialog>
+
+<!-- 🗑️ Modal de confirmación de borrado -->
+<p-dialog [visible]="showDeleteConfirm" (onHide)="cancelDelete()" header="Confirmar Borrado"
+    icon="pi pi-exclamation-triangle" [modal]="true" [closable]="false" [style]="{ width: '350px' }">
+    <p>
+        ¿Estás seguro de que deseas borrar
+        <strong>{{ categoryToDelete?.nombre }}</strong>?
+    </p>
+    <div class="p-d-flex p-jc-end p-mt-3 p-gap-2">
+        <button pButton label="Cancelar" class="p-button-text" (click)="cancelDelete()"></button>
+        <button pButton label="Sí, borrar" class="p-button-danger" (click)="deleteCategory()"></button>
     </div>
-</div>
+</p-dialog>

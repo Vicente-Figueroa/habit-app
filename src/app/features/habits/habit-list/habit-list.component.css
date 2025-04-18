@@ -1,168 +1,209 @@
-/* Lista de hábitos en formato grid */
-.habit-list ul {
-    list-style: none;
-    padding: 0;
+/* habits-list.component.css */
+
+/* Contenedor principal */
+.habit-list {
     display: grid;
-    grid-gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
 }
 
-/* Card de cada hábito */
-.card {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 16px;
+/* Estilo base para las tarjetas */
+.p-card {
+    border-radius: 12px;
+    background-color: var(--color-blanco);
     box-shadow: var(--sombra-suave);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-/* Encabezado con ícono y nombre */
-.card-header h4 {
-    margin: 0;
-    font-size: 1.2rem;
+.p-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(48, 240, 236, 0.15);
+}
+
+/* Encabezado de la tarjeta */
+:host ::ng-deep .p-card .p-card-header {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(48, 121, 240, 0.1);
+    background: var(--degradado-header);
+    border-radius: 12px 12px 0 0;
+}
+
+/* Título del hábito */
+.text-lg {
+    font-size: 1.125rem;
+    font-weight: 600;
     color: var(--color-texto);
+}
+
+/* Iconos en el encabezado */
+.pi-smile,
+.pi-frown {
+    color: var(--color-secundario);
+    font-size: 1.2rem;
+}
+
+/* Etiquetas de tipo de hábito */
+:host ::ng-deep .p-tag {
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-weight: 500;
+}
+
+:host ::ng-deep .p-tag.p-tag-success {
+    background-color: var(--color-acento);
+    color: var(--color-texto);
+}
+
+:host ::ng-deep .p-tag.p-tag-danger {
+    background-color: #FF6B6B;
+    color: white;
+}
+
+/* Contenido de la tarjeta */
+:host ::ng-deep .p-card .p-card-content {
+    padding: 1rem;
+}
+
+/* Detalles del hábito */
+.p-text-secondary {
+    color: var(--color-texto);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.p-text-secondary p {
+    margin: 0.5rem 0;
     display: flex;
     align-items: center;
-    gap: 8px;
 }
 
-/* Colorear el header según el tipo */
-.habit-bueno .card-header h4 {
-    color: #4caf50;
+.p-text-secondary i {
+    color: var(--color-secundario);
+    margin-right: 0.5rem;
+    font-size: 1rem;
 }
 
-.habit-malo .card-header h4 {
-    color: #f44336;
-}
-
-/* Información del hábito */
-.card-info {
+/* Footer de la tarjeta */
+:host ::ng-deep .p-card .p-card-footer {
+    padding: 0.5rem 1rem 1rem;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.card-info p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #555;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Íconos en la información */
-.card-info i {
-    color: var(--color-primario);
-}
-
-/* Acciones (editar y borrar) */
-.card-actions {
-    display: flex;
-    gap: 12px;
     justify-content: flex-end;
-    margin-top: 8px;
+    gap: 0.5rem;
+    border-top: 1px solid rgba(48, 121, 240, 0.1);
 }
 
-.card-actions button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.3rem;
-    color: var(--color-primario);
-    transition: color 0.3s;
+/* Botones de acción */
+:host ::ng-deep .p-button-rounded {
+    width: 2.5rem;
+    height: 2.5rem;
 }
 
-.card-actions button:hover {
+:host ::ng-deep .p-button-text {
     color: var(--color-secundario);
 }
 
-/* Estilos para modales (manteniendo la línea) */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
+:host ::ng-deep .p-button-text:hover {
+    background-color: rgba(48, 240, 236, 0.1);
 }
 
-.modal {
-    max-height: 70vh;
-    background-color: #fff;
-    padding: 16px;
-    /* Se reduce el padding para pantallas pequeñas */
-    border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: var(--sombra-suave);
-    text-align: left;
-    overflow-y: auto;
-    /* Permite hacer scroll si el contenido excede la altura máxima */
+:host ::ng-deep .p-button-danger {
+    color: #FF6B6B;
 }
 
-.modal h3 {
-    margin-top: 0;
-    font-size: 1.2rem;
+:host ::ng-deep .p-button-danger:hover {
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+/* Modal de edición */
+:host ::ng-deep .p-dialog {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header {
+    padding: 1.25rem 1.5rem;
+    background: var(--degradado-header);
     color: var(--color-texto);
 }
 
-.modal .form-group {
-    margin-bottom: 16px;
+:host ::ng-deep .p-dialog .p-dialog-content {
+    padding: 1.5rem;
+    background-color: var(--color-blanco);
 }
 
-.modal .form-group label {
-    display: block;
-    margin-bottom: 6px;
-    color: var(--color-texto);
+/* Campos del formulario */
+.p-field {
+    margin-bottom: 1.25rem;
+}
+
+.p-field label {
     font-weight: 500;
-    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: var(--color-texto);
 }
 
-.modal .form-group input,
-.modal .form-group select {
+:host ::ng-deep .p-inputtext {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid rgba(48, 121, 240, 0.3);
+    color: var(--color-texto);
 }
 
-.modal .form-group input:focus,
-.modal .form-group select:focus {
-    outline: none;
+:host ::ng-deep .p-inputtext:focus {
+    box-shadow: 0 0 0 2px rgba(48, 240, 236, 0.25);
     border-color: var(--color-primario);
 }
 
-.modal-actions {
+:host ::ng-deep .p-dropdown {
+    border-radius: 8px;
+}
+
+:host ::ng-deep .p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+    background-color: rgba(48, 240, 236, 0.2);
+    color: var(--color-texto);
+}
+
+/* Botones del modal */
+:host ::ng-deep .p-button {
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+}
+
+:host ::ng-deep .p-button:not(.p-button-text):not(.p-button-danger) {
+    background: var(--color-secundario);
+    border-color: var(--color-secundario);
+}
+
+:host ::ng-deep .p-button:not(.p-button-text):not(.p-button-danger):hover {
+    background: var(--color-primario);
+    border-color: var(--color-primario);
+    color: var(--color-texto);
+}
+
+/* Modal de confirmación */
+:host ::ng-deep .p-dialog-footer {
+    padding: 0 1.5rem 1.5rem;
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 0.5rem;
 }
 
-.modal-actions button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
+/* Soporte para dispositivos móviles */
+@media screen and (max-width: 768px) {
+    :host ::ng-deep .p-dialog {
+        width: 90% !important;
+        max-width: 500px;
+    }
 
-.modal-actions button:first-child {
-    background-color: var(--color-primario);
-    color: #fff;
-}
+    .p-field {
+        margin-bottom: 1rem;
+    }
 
-.modal-actions button:last-child {
-    background-color: #ccc;
-    color: #333;
+    .p-text-secondary p {
+        font-size: 0.9rem;
+    }
 }
