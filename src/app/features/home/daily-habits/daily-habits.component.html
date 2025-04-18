@@ -1,14 +1,13 @@
-<div class="daily-habits">
-  <h3>Hábitos de Hoy</h3>
+<div class="daily-habits p-pb-5">
+  <h2 class="section-title">Hábitos de Hoy</h2>
 
-  <div *ngFor="let category of ['diario', 'semanal', 'mensual', 'ocasional']">
-    <h4 *ngIf="groupedHabits[category]?.length">
-      <span *ngIf="category === 'diario'">📅</span>
-      <span *ngIf="category === 'semanal'">🗓️</span>
-      <span *ngIf="category === 'mensual'">📆</span>
-      <span *ngIf="category === 'ocasional'">🎯</span>
+  <div *ngFor="let category of ['diario', 'semanal', 'mensual', 'ocasional']" class="category-block">
+    <h3 *ngIf="groupedHabits[category]?.length" class="category-title">
+      <span class="emoji">
+        {{ category === 'diario' ? '📅' : category === 'semanal' ? '🗓️' : category === 'mensual' ? '📆' : '🎯' }}
+      </span>
       {{ category | titlecase }}
-    </h4>
+    </h3>
 
     <div class="habits-grid" *ngIf="groupedHabits[category]?.length">
       <ng-container *ngFor="let habit of groupedHabits[category]">
@@ -19,8 +18,8 @@
     </div>
   </div>
 
-  <div *ngIf="completedGoodHabits.length">
-    <h4>Hábitos Completados ✅</h4>
+  <div *ngIf="completedGoodHabits.length" class="completed-section">
+    <h3 class="completed-title">✅ Hábitos Completados</h3>
     <div class="habits-grid">
       <ng-container *ngFor="let habit of completedGoodHabits">
         <app-completed-habit-card [habit]="habit" [logs]="logs" (quickLog)="handleQuickLog($event)"

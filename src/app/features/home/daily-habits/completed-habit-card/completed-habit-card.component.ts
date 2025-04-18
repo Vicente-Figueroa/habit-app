@@ -5,11 +5,24 @@ import { Habit } from '../../../../core/models/habit.model';
 import { Log } from '../../../../core/models/log.model';
 import { WeeklyStatusBarComponent } from '../weekly-status-bar/weekly-status-bar.component';
 import { getProgress } from '../daily-habits.utils';
-
+// ✅ PrimeNG
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag'; // opcional, por si usás tags
+import { BadgeModule } from 'primeng/badge'; // opcional
+import { RippleModule } from 'primeng/ripple';
 @Component({
     selector: 'app-completed-habit-card',
     standalone: true,
-    imports: [CommonModule, WeeklyStatusBarComponent],
+    imports: [
+        CommonModule,
+        WeeklyStatusBarComponent,
+        CardModule,
+        ButtonModule,
+        TagModule,
+        BadgeModule,
+        RippleModule
+      ],
     templateUrl: './completed-habit-card.component.html',
     styleUrls: ['./completed-habit-card.component.css']
 })

@@ -9,10 +9,15 @@ import { Subscription } from 'rxjs';
 import { MotivationalTextService } from '../../core/services/motivational-text.service';
 import { currentTime } from '../../core/signals/time.signal';
 import { Log } from '../../core/models/log.model';
+import { CardModule } from 'primeng/card';
+import { Button, ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { TagModule } from 'primeng/tag';
+
 
 @Component({
   selector: 'app-home',
-  imports: [DailyHabitsComponent, CommonModule],
+  imports: [DailyHabitsComponent, CommonModule, CardModule, ButtonModule, DialogModule, TagModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -26,7 +31,7 @@ export class HomeComponent {
     public categorySignal: CategorySignal,
     public logSignal: LogSignal,
     private motivationalTextService: MotivationalTextService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.motivationalTextService.getMotivationalTextFromModel(

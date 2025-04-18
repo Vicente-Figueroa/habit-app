@@ -1,81 +1,57 @@
-<div class="home">
-  <!-- Fecha y hora en un pequeño recuadro en la esquina -->
-  <div class="date-time">
-    <h2>{{ today() | date: 'longDate' : 'es-CL' }}</h2>
-    <p>{{ today() | date: 'shortTime' : 'es-CL' }}</p>
-  </div>
-
+<div class="home-container">
+  <!-- Encabezado general -->
   <div class="home-header">
-    <h1>Bienvenido a la App de Hábitos</h1>
-    <p>{{ motivationalText }} - DeepSeek</p>
+    <div class="date-time">
+      <span>{{ today() | date: 'EEEE d MMMM' : 'es-CL' }}</span>
+      <span class="time">{{ today() | date: 'shortTime' : 'es-CL' }}</span>
+    </div>
+
+    <div class="welcome-text">
+      <h2>Bienvenido de nuevo 👋</h2>
+      <p class="motivational">“{{ motivationalText }}”</p>
+    </div>
   </div>
 
-  <!-- Instrucciones para usuarios sin datos -->
-  <div *ngIf="habitSignal.habits().length === 0; else habitsData" class="instructions">
-    <div class="instructions-container">
-      <header class="instructions-header">
-        <h1>Bienvenido a tu App de Hábitos! 🌟</h1>
-      </header>
-      <div class="instructions-body">
-        <p>Cuando no encuentres datos, sigue estos pasos para comenzar:</p>
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="main-content">
+    <!-- HABITS O ONBOARDING -->
+    <ng-container *ngIf="habitSignal.habits().length === 0; else habitsData">
+      <section class="onboarding">
+        <h3>Empieza aquí</h3>
         <ol>
-          <li>
-            <strong>Crea Categorías:</strong>
-            <p>Define las áreas de tu vida que quieres mejorar, como “Salud”, “Productividad” o “Creatividad”. Ajusta
-              los niveles de satisfacción para tener una visión clara de tus prioridades. 🚀</p>
-          </li>
-          <li>
-            <strong>Agrega Hábitos:</strong>
-            <p>
-              <em>Buenas vs. Malas:</em> Los hábitos buenos son aquellos que deseas cumplir, mientras que los malos son
-              los que buscas evitar.<br>
-              <em>Personaliza las Medidas:</em> Puedes establecer desde “0 vez” hasta “30 páginas de libro”. La app es
-              muy versátil para adaptarse a tus objetivos. 📚
-            </p>
-          </li>
-          <li>
-            <strong>Define la Frecuencia:</strong>
-            <p>
-              Los hábitos pueden ser diarios, mensuales u ocasionales.<br>
-              <em>Nota:</em> Los hábitos ocasionales no generan rachas, pero son útiles para llevar un registro. 🗓️
-            </p>
-          </li>
-          <li>
-            <strong>Registra tus Días:</strong>
-            <p>
-              Anota cuándo realizas cada hábito para que aparezcan en el home y se actualice tu registro diario (+1 en
-              el contador). ¡Así podrás seguir tu progreso fácilmente! 🔥
-            </p>
-          </li>
+          <li><strong>Crea categorías</strong> – como Salud o Productividad</li>
+          <li><strong>Agrega hábitos</strong> – buenos o malos, tú eliges</li>
+          <li><strong>Configura frecuencia</strong> – diaria, mensual o libre</li>
+          <li><strong>Haz log</strong> – registra tus hábitos día a día</li>
         </ol>
-        <p class="final-msg">¡Empieza a crear y mejora tu vida día a día! 💪</p>
-      </div>
-    </div>
+        <p class="cta">💪 ¡Hoy es un buen día para comenzar!</p>
+      </section>
+    </ng-container>
+
+    <ng-template #habitsData>
+      <app-daily-habits
+        [habits]="todaysHabits"
+        [logs]="logSignal.logs()"
+        (quickLog)="onQuickLog($event)">
+      </app-daily-habits>
+    </ng-template>
+
+    <!-- HABITS FALLIDOS -->
+    <section *ngIf="getFailedHabitsYesterday().length" class="habit-warnings">
+      <details>
+        <summary>⚠️ Hábitos no cumplidos ayer ({{ getFailedHabitsYesterday().length }})</summary>
+        <ul>
+          <li *ngFor="let habit of getFailedHabitsYesterday()">
+            {{ habit.nombre }} – objetivo: {{ habit.objetivo }} {{ habit.unidadObjetivo }}
+          </li>
+        </ul>
+      </details>
+    </section>
   </div>
 
-  <ng-template #habitsData>
-    <!-- Componente que muestra los hábitos diarios -->
-    <app-daily-habits [habits]="todaysHabits" [logs]="logSignal.logs()"
-      (quickLog)="onQuickLog($event)"></app-daily-habits>
-  </ng-template>
-
-  <!-- Modal de confirmación -->
-  <div class="modal-overlay" *ngIf="showConfirmation">
-    <div class="modal">
-      <p>{{ confirmationMessage }}</p>
-      <button (click)="closeConfirmation()">Cerrar</button>
-    </div>
-  </div>
-  <div *ngIf="getFailedHabitsYesterday().length" class="habit-alert">
-    <details>
-      <summary>⚠️ Hábitos no cumplidos ayer ({{ getFailedHabitsYesterday().length }})</summary>
-      <ul>
-        <li *ngFor="let habit of getFailedHabitsYesterday()">
-          {{ habit.nombre }} – objetivo: {{ habit.objetivo }} {{ habit.unidadObjetivo }}
-        </li>
-      </ul>
-    </details>
-  </div>
-  
+  <!-- MODAL -->
+  <p-dialog [(visible)]="showConfirmation" modal [closable]="false" header="✔️ Log registrado">
+    <p>{{ confirmationMessage }}</p>
+    <button pButton label="Cerrar" class="p-mt-2" (click)="closeConfirmation()"></button>
+  </p-dialog>
 </div>
-
