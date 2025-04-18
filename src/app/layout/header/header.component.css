@@ -1,39 +1,35 @@
-.header {
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--degradado-header);
+    z-index: 100;
+}
+
+/* Espacio para que el contenido no quede detrás */
+body {
+    padding-top: 64px;
+}
+
+.header-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 16px;
-    background: var(--degradado-header);
-    /* Utiliza el degradado definido en el root */
-    color: var(--color-blanco);
-    box-shadow: var(--sombra-suave);
 }
 
-.menu-btn {
-    background: none;
-    border: none;
-    color: var(--color-blanco);
-    font-size: 24px;
-    cursor: pointer;
-    transition: transform 0.2s;
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    color: white;
 }
 
-.menu-btn:hover {
-    transform: scale(1.1);
+.text-xl {
+    font-size: 1.5rem;
 }
 
-.header-content h1 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 500;
-}
-
-/* Enlaces */
-a {
-    color: var(--color-blanco);
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
+.font-bold {
+    font-weight: 600;
 }

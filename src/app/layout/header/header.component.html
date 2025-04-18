@@ -1,10 +1,20 @@
-<header class="header">
-    <button (click)="openMenu()" class="menu-btn">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div class="header-content">
-        <a href="home">
-            <h1>Habit APP</h1>
-        </a>
+<header class="main-header p-px-4 p-py-3 shadow-sm">
+    <div class="header-content p-d-flex p-ai-center p-jc-between w-full">
+        <!-- Izquierda: botón menú -->
+        <div class="header-left">
+            <button pButton icon="pi pi-bars" (click)="openMenu()" class="p-button-rounded p-button-text p-button-plain"
+                style="font-size: 1.4rem;">
+            </button>
+        </div>
+
+        <!-- Centro: título -->
+        <div class="header-center">
+            <a routerLink="/home" class="text-white no-underline">
+                <span class="text-xl font-bold">Habit APP</span>
+            </a>
+        </div>
+
+        <!-- Derecha: espacio vacío o futuro iconos -->
+        <div class="header-right" style="width: 2rem;"></div>
     </div>
 </header>

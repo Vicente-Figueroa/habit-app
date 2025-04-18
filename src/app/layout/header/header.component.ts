@@ -1,10 +1,13 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [],
+  standalone: true,
+  imports: [ButtonModule, RouterModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
   @Output() toggleMenu = new EventEmitter<void>();
